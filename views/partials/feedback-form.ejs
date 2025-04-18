@@ -1,0 +1,100 @@
+<div class="container-fluid py-6 px-5">
+    <div class="row gx-5">
+        <div class="col-lg-4 mb-5 mb-lg-0">
+            <div class="mb-4">
+                <h1 class="display-5 text-uppercase mb-4">Request A <span class="text-primary">Call Back</span></h1>
+            </div>
+            <p class="mb-5">"Have questions? Chat with our experts for instant support!" We believe that owning a
+                car should be exciting, not stressful! That's why we offer affordable financing plans, low-interest
+                rates, and flexible payment options to fit your budget. Plus, take advantage of our exclusive
+                discounts and special promotions to get the best value for your money. No matter your financial
+                situation, we'll work with you to make car ownership a reality.</p>
+            <a class="btn btn-primary py-3 px-5" href="/about">Learn more</a>
+        </div>
+        <div class="col-lg-8"> 
+            <div class="bg-light text-center p-5">
+                <form id="feedbackForm" action="/submit-feedback" method="POST">
+                    <h1>Send Your Feedback</h1>
+                    <% if (messages.error) { %>
+                        <div class="alert alert-danger"><%= messages.error %></div>
+                    <% } %>
+                    <div class="row g-3">
+                        <div class="col-12 col-sm-6">
+                            <input type="text" class="form-control border-0" id="name" name="name" placeholder="Your Name" required
+                                style="height: 55px;">
+                            <div class="invalid-feedback text-start">Please enter your name</div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <input type="email" class="form-control border-0" id="email" name="email" placeholder="Your Email" required
+                                style="height: 55px;">
+                            <div class="invalid-feedback text-start">Please enter a valid email</div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <input type="tel" class="form-control border-0" id="phone" name="phone" placeholder="Your Phone Number"
+                                style="height: 55px;">
+                            <div class="invalid-feedback text-start">Please enter a valid phone number</div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <select class="form-control border-0" id="subject" name="subject" style="height: 55px;" required>
+                                <option value="" disabled selected>Select Subject</option>
+                                <option value="General Inquiry">General Inquiry</option>
+                                <option value="Car Purchase">Car Purchase</option>
+                                <option value="Service Question">Service Question</option>
+                                <option value="Feedback">Feedback</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <div class="invalid-feedback text-start">Please select a subject</div>
+                        </div>
+                        <div class="col-12">
+                            <textarea class="form-control border-0" id="message" name="message" rows="5" placeholder="Message" required></textarea>
+                            <div class="invalid-feedback text-start">Please enter your message</div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check text-start">
+                                <input class="form-check-input" type="checkbox" id="consent" name="consent" required>
+                                <label class="form-check-label" for="consent">
+                                    I agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">privacy policy</a>
+                                </label>
+                                <div class="invalid-feedback">You must agree before submitting</div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-primary w-100 py-3" type="submit" id="submitBtn">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div> 
+    </div>
+</div>
+
+<!-- Privacy Policy Modal -->
+<div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="privacyModalLabel">Privacy Policy</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>CARZISE is committed to protecting your privacy. We collect personal information only when you voluntarily provide it to us through our feedback form. The information we collect includes:</p>
+                <ul>
+                    <li>Your name</li>
+                    <li>Email address</li>
+                    <li>Phone number (optional)</li>
+                    <li>Your message or inquiry</li>
+                </ul>
+                <p>We use this information to:</p>
+                <ul>
+                    <li>Respond to your inquiries and provide customer support</li>
+                    <li>Improve our products and services</li>
+                    <li>Send you information about promotions or updates (only if you opt-in)</li>
+                </ul>
+                <p>We will not share, sell, or distribute your personal information to any third parties without your consent, except as required by law.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
