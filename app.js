@@ -28,9 +28,6 @@ app.get('/carzise_service', (req, res) => {
     res.render('carzise_service');
 });
 
-app.get('/carserv_faq', (req, res) => {
-    res.render('carserv_faq');
-});
 
 app.get('/carserv_index', (req, res) => {
     res.render('carserv_index');
@@ -48,6 +45,9 @@ app.get('/dashboard', (req, res) => {
     res.render('dashboard');
 });
 
+app.get('/AutoNova_index', (req, res) => {
+    res.render('AutoNova_index');
+});
 
 //carzise home feedback form
 

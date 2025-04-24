@@ -1,0 +1,99 @@
+/* === Custom Car Buy Theme Styling === */
+
+.carousel-caption h1,
+.carousel-caption h3 {
+  text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.8);
+}
+
+.price .price-item {
+  background: #fff;
+  border: 1px solid #eee;
+  padding: 30px;
+  text-align: center;
+  border-radius: 12px;
+  transition: 0.3s;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+}
+
+.price .price-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.price .price-header h3 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.price .price-header h2 {
+  font-size: 36px;
+  font-weight: 700;
+  color: #007bff;
+}
+
+.price .price-body ul {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.price .price-body li {
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.service-item {
+  background: #f9f9f9;
+  border-radius: 10px;
+  padding: 25px;
+  margin-bottom: 30px;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+  border: 1px solid #e3e3e3;
+}
+
+.service-item:hover {
+  background: #fff;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+}
+
+.service-item i {
+  font-size: 36px;
+  color: #007bff;
+  margin-bottom: 20px;
+}
+
+.service-item h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.section-header p {
+  font-size: 16px;
+  color: #007bff;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.section-header h2 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+}
+
+.btn-custom {
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 5px;
+  padding: 10px 25px;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.btn-custom:hover {
+  background-color: #0056b3;
+  color: #fff;
+}
