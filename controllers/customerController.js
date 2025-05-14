@@ -62,73 +62,73 @@ exports.getCustomerDashboard = [isCustomer, async (req, res) => {
         const addresses = Array.isArray(addressResult) ? addressResult : [];
         const feedbacks = Array.isArray(feedbackResult) ? feedbackResult : [];
 
-        const [invoice] = await pool.query(`
-            SELECT 
-            i.invoice_no, 
-            i.invoice_time, 
-            a.admin_username, 
-            GROUP_CONCAT(m.medicine_name ORDER BY m.medicine_name SEPARATOR ', ') AS medicine_names,
-            GROUP_CONCAT(m.medicine_composition ORDER BY m.medicine_name SEPARATOR ', ') AS medicine_compositions,
-            GROUP_CONCAT(COALESCE(s.supplier_name, 'Unknown') ORDER BY m.medicine_name SEPARATOR ', ') AS supplier_names,
-            GROUP_CONCAT(DATE_FORMAT(m.medicine_expiry_date, '%Y-%m-%d') ORDER BY m.medicine_name SEPARATOR ', ') AS medicine_expiry_dates,
-            GROUP_CONCAT(m.medicine_price ORDER BY m.medicine_name SEPARATOR ', ') AS medicine_prices,
-            GROUP_CONCAT(p.purchased_quantity ORDER BY m.medicine_name SEPARATOR ', ') AS purchased_quantities,
-            GROUP_CONCAT(p.total_amt ORDER BY m.medicine_name SEPARATOR ', ') AS total_amt,
-            ps.actual_amt_to_pay,
-            i.prev_balance, 
-            i.total_amt_to_pay,
-            i.discount,
-            i.net_total,
-            py.payment_amt AS amount_paid, 
-            py.payment_time AS payment_date,
-            i.curr_balance    
-            FROM invoice i
-            JOIN purchase_sessions ps ON i.purchase_session_id = ps.purchase_session_id 
-            JOIN purchases p ON ps.customer_id = p.customer_id AND ps.purchase_time = p.purchase_time
-            JOIN medicines m ON p.medicine_id = m.medicine_id
-            LEFT JOIN suppliers s ON p.supplier_id = s.supplier_id
-            JOIN customers c ON ps.customer_id = c.customer_id  
-            LEFT JOIN admin a ON i.admin_username = a.admin_username  
-            LEFT JOIN payments py ON i.payment_id = py.payment_id  
-            WHERE ps.customer_id = ?
-            GROUP BY i.invoice_no
-            ORDER BY i.invoice_time DESC
-        `, [customerId]);
+//         const [invoice] = await pool.query(`
+//             SELECT 
+//             i.invoice_no, 
+//             i.invoice_time, 
+//             a.admin_username, 
+//             GROUP_CONCAT(m.medicine_name ORDER BY m.medicine_name SEPARATOR ', ') AS medicine_names,
+//             GROUP_CONCAT(m.medicine_composition ORDER BY m.medicine_name SEPARATOR ', ') AS medicine_compositions,
+//             GROUP_CONCAT(COALESCE(s.supplier_name, 'Unknown') ORDER BY m.medicine_name SEPARATOR ', ') AS supplier_names,
+//             GROUP_CONCAT(DATE_FORMAT(m.medicine_expiry_date, '%Y-%m-%d') ORDER BY m.medicine_name SEPARATOR ', ') AS medicine_expiry_dates,
+//             GROUP_CONCAT(m.medicine_price ORDER BY m.medicine_name SEPARATOR ', ') AS medicine_prices,
+//             GROUP_CONCAT(p.purchased_quantity ORDER BY m.medicine_name SEPARATOR ', ') AS purchased_quantities,
+//             GROUP_CONCAT(p.total_amt ORDER BY m.medicine_name SEPARATOR ', ') AS total_amt,
+//             ps.actual_amt_to_pay,
+//             i.prev_balance, 
+//             i.total_amt_to_pay,
+//             i.discount,
+//             i.net_total,
+//             py.payment_amt AS amount_paid, 
+//             py.payment_time AS payment_date,
+//             i.curr_balance    
+//             FROM invoice i
+//             JOIN purchase_sessions ps ON i.purchase_session_id = ps.purchase_session_id 
+//             JOIN purchases p ON ps.customer_id = p.customer_id AND ps.purchase_time = p.purchase_time
+//             JOIN medicines m ON p.medicine_id = m.medicine_id
+//             LEFT JOIN suppliers s ON p.supplier_id = s.supplier_id
+//             JOIN customers c ON ps.customer_id = c.customer_id  
+//             LEFT JOIN admin a ON i.admin_username = a.admin_username  
+//             LEFT JOIN payments py ON i.payment_id = py.payment_id  
+//             WHERE ps.customer_id = ?
+//             GROUP BY i.invoice_no
+//             ORDER BY i.invoice_time DESC
+//         `, [customerId]);
 
 
 
 
-        const [medicines] = await pool.query(`SELECT m.medicine_id, m.medicine_name, m.medicine_composition, 
-             m.medicine_price, m.medicine_type, m.medicine_expiry_date, m.medicine_img, SUM(s.stock_quantity) as total_stock
-      FROM medicines m
-      LEFT JOIN stocks s ON m.medicine_id = s.medicine_id
-      WHERE m.medicine_expiry_date > CURDATE()
-      GROUP BY m.medicine_id
-      HAVING total_stock > 0`
-        );
-        const [cartItems] = await pool.query(`SELECT 
-                p.purchase_id,
-                m.medicine_id,
-                m.medicine_name,
-                m.medicine_composition,
-                m.medicine_price,
-                p.purchased_quantity,
-                (m.medicine_price * p.purchased_quantity) AS total_price,
-                m.medicine_img,
-                ps.purchase_time
-            FROM purchases p
-            JOIN purchase_sessions ps 
-                ON p.customer_id = ps.customer_id 
-                AND p.purchase_time = ps.purchase_time
-            JOIN medicines m 
-                ON p.medicine_id = m.medicine_id
-            WHERE p.customer_id = ?
-            AND ps.purchase_time = (
-                SELECT MAX(purchase_time) 
-                FROM purchase_sessions 
-                WHERE customer_id = ?
-            )
-`, [customerId, customerId]);
+//         const [medicines] = await pool.query(`SELECT m.medicine_id, m.medicine_name, m.medicine_composition, 
+//              m.medicine_price, m.medicine_type, m.medicine_expiry_date, m.medicine_img, SUM(s.stock_quantity) as total_stock
+//       FROM medicines m
+//       LEFT JOIN stocks s ON m.medicine_id = s.medicine_id
+//       WHERE m.medicine_expiry_date > CURDATE()
+//       GROUP BY m.medicine_id
+//       HAVING total_stock > 0`
+//         );
+//         const [cartItems] = await pool.query(`SELECT 
+//                 p.purchase_id,
+//                 m.medicine_id,
+//                 m.medicine_name,
+//                 m.medicine_composition,
+//                 m.medicine_price,
+//                 p.purchased_quantity,
+//                 (m.medicine_price * p.purchased_quantity) AS total_price,
+//                 m.medicine_img,
+//                 ps.purchase_time
+//             FROM purchases p
+//             JOIN purchase_sessions ps 
+//                 ON p.customer_id = ps.customer_id 
+//                 AND p.purchase_time = ps.purchase_time
+//             JOIN medicines m 
+//                 ON p.medicine_id = m.medicine_id
+//             WHERE p.customer_id = ?
+//             AND ps.purchase_time = (
+//                 SELECT MAX(purchase_time) 
+//                 FROM purchase_sessions 
+//                 WHERE customer_id = ?
+//             )
+// `, [customerId, customerId]);
 
         res.render('customerDashboard', {
             pagetitle: `Customer Panel - ${req.session.user.username}`,
@@ -138,9 +138,9 @@ exports.getCustomerDashboard = [isCustomer, async (req, res) => {
             customer,
             addresses,
             feedbacks,
-            medicines: medicines || [],
-            cartItems: cartItems || [],
-            invoice
+            // medicines: medicines || [],
+            // cartItems: cartItems || [],
+            // invoice
         });
 
     } catch (err) {
