@@ -1,5 +1,5 @@
 <%- include('includes/header') %>
-  <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.tailwindcss.com"></script>
 
 <div class="bg-gradient-to-br from-blue-50 to-white min-h-screen py-8 px-4">
   <div class="max-w-6xl mx-auto">
@@ -135,7 +135,7 @@
             <button onclick="openTab('purchase')" id="purchase-tab" class="tab-btn flex-1 py-4 font-medium text-center text-gray-600">
               <i class="fa-solid fa-shopping-cart mr-2"></i>Purchase
             </button>
-           
+
           </div>
 
           <!-- Tab Content -->
@@ -501,7 +501,7 @@
                       <p class="text-gray-600 text-sm"></p>
                       <p class="text-blue-600 font-bold text-lg mt-2">₹66</p>
                     </div>
-                    <button type="submit"  data-type="add-to-cart" class="mt-3 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
+                    <button type="submit" data-type="add-to-cart" class="mt-3 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
                       Add to Purchase
                     </button>
                   </div>
@@ -629,313 +629,317 @@
 
 
 
-            
+              <!-- No Services Found Message -->
 
-            <!-- No Services Found Message -->
-
-            <div class="col-span-2 py-8 text-center">
-              <div class="text-gray-400 mb-2"><i class="fa-solid fa-shopping-cart text-3xl"></i></div>
-              <p class="text-gray-500">No Services found..</p>
-              <button onclick="toggleAddPurchaseForm()" class="mt-3 text-blue-600 hover:text-blue-800 font-medium">+ Share your first experience</button>
+              <div class="col-span-2 py-8 text-center">
+                <div class="text-gray-400 mb-2"><i class="fa-solid fa-shopping-cart text-3xl"></i></div>
+                <p class="text-gray-500">No Services found..</p>
+                <button onclick="toggleAddPurchaseForm()" class="mt-3 text-blue-600 hover:text-blue-800 font-medium">+ Share your first experience</button>
+              </div>
             </div>
-            </div>
+          </div>
         </div>
-      </div>
 
-      <!-- Purchase History Tab -->
-       
+        <!-- Purchase History Tab -->
+
+      </div>
     </div>
   </div>
 </div>
 </div>
 </div>
-</div>
 
 
 <script>
-    // Toggle password visibility
-    function togglePassword() {
-      const passwordField = document.getElementById('customer_password');
-      const passwordToggle = document.getElementById('password-toggle');
+  // Toggle password visibility
+  function togglePassword() {
+    const passwordField = document.getElementById('customer_password');
+    const passwordToggle = document.getElementById('password-toggle');
 
-      if (passwordField.type === 'password') {
-        passwordField.type = 'text';
-        passwordToggle.classList.remove('fa-eye');
-        passwordToggle.classList.add('fa-eye-slash');
-      } else {
-        passwordField.type = 'password';
-        passwordToggle.classList.remove('fa-eye-slash');
-        passwordToggle.classList.add('fa-eye');
-      }
+    if (passwordField.type === 'password') {
+      passwordField.type = 'text';
+      passwordToggle.classList.remove('fa-eye');
+      passwordToggle.classList.add('fa-eye-slash');
+    } else {
+      passwordField.type = 'password';
+      passwordToggle.classList.remove('fa-eye-slash');
+      passwordToggle.classList.add('fa-eye');
     }
+  }
 
-    // Preview image before upload
-    function previewImage(event) {
-      const preview = document.getElementById('image-preview');
-      const removeBtn = document.getElementById('remove-image');
-      const file = event.target.files[0];
+  // Preview image before upload
+  function previewImage(event) {
+    const preview = document.getElementById('image-preview');
+    const removeBtn = document.getElementById('remove-image');
+    const file = event.target.files[0];
 
-      if (file) {
-        preview.src = URL.createObjectURL(file);
-        preview.classList.remove('hidden');
-        removeBtn.classList.remove('hidden');
-      }
+    if (file) {
+      preview.src = URL.createObjectURL(file);
+      preview.classList.remove('hidden');
+      removeBtn.classList.remove('hidden');
     }
+  }
 
-    // Remove image preview
-    function removeImage() {
-      const preview = document.getElementById('image-preview');
-      const removeBtn = document.getElementById('remove-image');
-      const fileInput = document.getElementById('customer_photo');
+  // Remove image preview
+  function removeImage() {
+    const preview = document.getElementById('image-preview');
+    const removeBtn = document.getElementById('remove-image');
+    const fileInput = document.getElementById('customer_photo');
 
-      preview.src = '';
-      preview.classList.add('hidden');
-      removeBtn.classList.add('hidden');
-      fileInput.value = '';
-    }
+    preview.src = '';
+    preview.classList.add('hidden');
+    removeBtn.classList.add('hidden');
+    fileInput.value = '';
+  }
 
-    document.querySelector('form').addEventListener('submit', function(e) {
-      const submitBtn = document.getElementById('submitBtn');
-      const submitText = document.getElementById('submitText');
-      const loadingSpinner = document.getElementById('loadingSpinner');
+  document.querySelector('form').addEventListener('submit', function(e) {
+    const submitBtn = document.getElementById('submitBtn');
+    const submitText = document.getElementById('submitText');
+    const loadingSpinner = document.getElementById('loadingSpinner');
 
-      // Show loading state
-      submitBtn.disabled = true;
-      submitText.textContent = 'Changing Profile...';
-      loadingSpinner.classList.remove('hidden');
+    // Show loading state
+    submitBtn.disabled = true;
+    submitText.textContent = 'Changing Profile...';
+    loadingSpinner.classList.remove('hidden');
+  });
+
+  // Tab navigation
+  function openTab(tabName) {
+    // Hide all tab contents
+    const tabContents = document.querySelectorAll('.tab-content');
+    tabContents.forEach(content => content.classList.add('hidden'));
+
+    // Remove active class from all tab buttons
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    tabButtons.forEach(btn => {
+      btn.classList.remove('bg-blue-50', 'text-blue-800', 'border-b-2', 'border-blue-600');
+      btn.classList.add('text-gray-600');
     });
 
-    // Tab navigation
-    function openTab(tabName) {
-      // Hide all tab contents
-      const tabContents = document.querySelectorAll('.tab-content');
-      tabContents.forEach(content => content.classList.add('hidden'));
+    // Show selected tab content
+    document.getElementById(tabName + '-content').classList.remove('hidden');
 
-      // Remove active class from all tab buttons
-      const tabButtons = document.querySelectorAll('.tab-btn');
-      tabButtons.forEach(btn => {
-        btn.classList.remove('bg-blue-50', 'text-blue-800', 'border-b-2', 'border-blue-600');
-        btn.classList.add('text-gray-600');
-      });
+    // Add active class to selected button
+    const activeTab = document.getElementById(tabName + '-tab');
+    activeTab.classList.add('bg-blue-50', 'text-blue-800', 'border-b-2', 'border-blue-600');
+    activeTab.classList.remove('text-gray-600');
 
-      // Show selected tab content
-      document.getElementById(tabName + '-content').classList.remove('hidden');
-
-      // Add active class to selected button
-      const activeTab = document.getElementById(tabName + '-tab');
-      activeTab.classList.add('bg-blue-50', 'text-blue-800', 'border-b-2', 'border-blue-600');
-      activeTab.classList.remove('text-gray-600');
-
-      // If it's the Purchase History tab, fetch cart history
-      if (tabName === 'invoices') {
-        fetchCartHistory();
-      }
+    // If it's the Purchase History tab, fetch cart history
+    if (tabName === 'invoices') {
+      fetchCartHistory();
     }
+  }
 
 
-    function fetchCartHistory() {
-  fetch('/customer/cart/history')
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        const container = document.getElementById('purchase-history-list');
-        container.innerHTML = '';
+  function fetchCartHistory() {
+    fetch('/customer/cart/history')
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const container = document.getElementById('purchase-history-list');
+          container.innerHTML = '';
 
-        if (data.cartHistory.length === 0) {
-          container.innerHTML = '<p class="text-gray-500 text-center">No purchase history found.</p>';
-        } else {
-          let total = 0;
+          if (data.cartHistory.length === 0) {
+            container.innerHTML = '<p class="text-gray-500 text-center">No purchase history found.</p>';
+          } else {
+            let total = 0;
 
-          data.cartHistory.forEach(item => {
-            const service = document.createElement('div');
-            service.className = "flex justify-between border-b py-2";
-            service.innerHTML = `
+            data.cartHistory.forEach(item => {
+              const service = document.createElement('div');
+              service.className = "flex justify-between border-b py-2";
+              service.innerHTML = `
               <span>${item.service_name}</span>
               <span>${item.service_price}</span>
             `;
-            container.appendChild(service);
+              container.appendChild(service);
 
-            // Remove ₹ symbol and add to total
-            total += parseInt(item.service_price.replace('₹', '').replace('$', '').trim());
-          });
+              // Remove ₹ symbol and add to total
+              total += parseInt(item.service_price.replace('₹', '').replace('$', '').trim());
+            });
 
-          // Add a separator line
-          const separator = document.createElement('hr');
-          separator.className = 'my-4 border-t-2';
-          container.appendChild(separator);
+            // Add a separator line
+            const separator = document.createElement('hr');
+            separator.className = 'my-4 border-t-2';
+            container.appendChild(separator);
 
-          // Add total amount
-          const totalDiv = document.createElement('div');
-          totalDiv.className = "flex justify-between text-lg font-bold text-blue-800";
-          totalDiv.innerHTML = `
+            // Add total amount
+            const totalDiv = document.createElement('div');
+            totalDiv.className = "flex justify-between text-lg font-bold text-blue-800";
+            totalDiv.innerHTML = `
             <span>Total:</span>
             <span>₹${total}</span>
           `;
-          container.appendChild(totalDiv);
+            container.appendChild(totalDiv);
+          }
         }
-      }
-    })
-    .catch(error => {
-      console.error('Error fetching cart history:', error);
-    });
-}
+      })
+      .catch(error => {
+        console.error('Error fetching cart history:', error);
+      });
+  }
 
 
-    // Toggle add address form
-    function toggleAddAddressForm() {
-      const form = document.getElementById('add-address-form');
-      form.classList.toggle('hidden');
-    }
+  // Toggle add address form
+  function toggleAddAddressForm() {
+    const form = document.getElementById('add-address-form');
+    form.classList.toggle('hidden');
+  }
 
-    // Toggle edit forms
-    function toggleEditForm(id) {
-      const form = document.getElementById(id);
-      form.classList.toggle('hidden');
-    }
+  // Toggle edit forms
+  function toggleEditForm(id) {
+    const form = document.getElementById(id);
+    form.classList.toggle('hidden');
+  }
 
-    // Toggle add feedback form
-    function toggleAddFeedbackForm() {
-      const form = document.getElementById('add-feedback-form');
-      form.classList.toggle('hidden');
-    }
+  // Toggle add feedback form
+  function toggleAddFeedbackForm() {
+    const form = document.getElementById('add-feedback-form');
+    form.classList.toggle('hidden');
+  }
 
-    // Toggle add feedback form
-    function toggleAddPurchaseForm() {
-      const form = document.getElementById('add-purchase-form');
-      form.classList.toggle('hidden');
-    }
+  // Toggle add feedback form
+  function toggleAddPurchaseForm() {
+    const form = document.getElementById('add-purchase-form');
+    form.classList.toggle('hidden');
+  }
 
 
 
-    // Initialize the first tab on page load
-    document.addEventListener('DOMContentLoaded', function() {
-      // Set the first tab as active by default
-      openTab('purchase');
-    });
-  </script>
+  // Initialize the first tab on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    // Set the first tab as active by default
+    openTab('purchase');
+  });
+</script>
 
 
 
 <script>
-    function toggleDropdown(id) {
-      var dropdown = document.getElementById(id);
-      dropdown.classList.toggle('hidden');
-    }
-  </script>
+  function toggleDropdown(id) {
+    var dropdown = document.getElementById(id);
+    dropdown.classList.toggle('hidden');
+  }
+</script>
 
-  <script>
-    let cart = [];
+<script>
+  let cart = [];
 
+  // Attach click events to all Add to Purchase buttons
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('button[data-type="add-to-cart"]').forEach(button => {
+      button.addEventListener('click', function (event) {
+        event.preventDefault(); // prevent form submit
+        const card = this.closest('.border.rounded-lg.shadow-md.p-4');
+        const serviceName = card.querySelector('h2').textContent.trim();
+        const servicePrice = card.querySelector('.text-blue-600').textContent.trim();
 
-
-    // Attach click events to all Add to Purchase buttons
-    document.addEventListener('DOMContentLoaded', function() {
-      document.querySelectorAll('button[data-type="add-to-cart"]').forEach(button => {
-        button.addEventListener('click', function(event) {
-          event.preventDefault(); // prevent form submit
-          const card = this.closest('.border.rounded-lg.shadow-md.p-4');
-          const serviceName = card.querySelector('h2').textContent.trim();
-          const servicePrice = card.querySelector('.text-blue-600').textContent.trim();
-
-          // Add to cart
-          cart.push({
-            name: serviceName,
-            price: servicePrice
-          });
-
-          alert(`${serviceName} added to cart!`);
+        // Add to cart
+        cart.push({
+          name: serviceName,
+          price: servicePrice
         });
+
+        alert(`${serviceName} added to cart!`);
       });
     });
+  });
 
-    // Toggle and show cart items
-    function toggleAddPurchaseForm() {
-      let cartListHtml = '';
+  // Toggle and show cart items with total
+  function toggleAddPurchaseForm() {
+    let cartListHtml = '';
+    let total = 0;
 
-      if (cart.length === 0) {
-        cartListHtml = '<p class="text-gray-500">Your cart is empty.</p>';
-      } else {
-        cart.forEach(item => {
-          cartListHtml += `<div class="flex justify-between border-b py-2">
-          <span>${item.name}</span>
-          <span>${item.price}</span>
+    if (cart.length === 0) {
+      cartListHtml = '<p class="text-gray-500">Your cart is empty.</p>';
+    } else {
+      cart.forEach(item => {
+        const priceNumber = parseInt(item.price.replace(/[^\d]/g, ''));
+        total += priceNumber;
+        cartListHtml += `
+          <div class="flex justify-between border-b py-2">
+            <span>${item.name}</span>
+            <span>${item.price}</span>
+          </div>`;
+      });
+
+      // Add total row
+      cartListHtml += `
+        <hr class="my-4 border-t-2">
+        <div class="flex justify-between text-lg font-bold text-blue-800">
+          <span>Total:</span>
+          <span>₹${total}</span>
         </div>`;
-        });
-      }
+    }
 
-      const modal = document.createElement('div');
-      modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50';
-      modal.innerHTML = `
-      <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50';
+    modal.innerHTML = `
+      <div class="bg-white p-6 rounded-lg shadow-lg w-96 max-h-[90vh] overflow-y-auto">
         <h2 class="text-2xl font-bold mb-4 text-center">Your Cart</h2>
-        <div class="overflow-y-auto max-h-64">${cartListHtml}</div>
+        <div>${cartListHtml}</div>
         <div class="mt-6 flex justify-between">
           <button onclick="closeCart()" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Close</button>
           <button onclick="checkout()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Checkout</button>
         </div>
       </div>
     `;
-      document.body.appendChild(modal);
+    document.body.appendChild(modal);
+  }
+
+  function closeCart() {
+    document.querySelector('.fixed.inset-0').remove();
+  }
+
+  function checkout() {
+    if (cart.length === 0) {
+      alert('Your cart is empty!');
+      return;
     }
 
-    function closeCart() {
-      document.querySelector('.fixed.inset-0').remove();
-    }
+    fetch('/customerDashboard/cart/checkout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ cart })
+    })
+      .then(response => response.json())
+      .then(data => {
+        alert(data.message);
+        if (data.success) {
+          cart = []; // Clear cart after successful save
+          closeCart();
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Something went wrong!');
+      });
+  }
+</script>
 
-    function checkout() {
-      if (cart.length === 0) {
-        alert('Your cart is empty!');
-        return;
-      }
-
-      fetch('/customerDashboard/cart/checkout', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            cart
-          })
-        })
-        .then(response => response.json())
-        .then(data => {
-          alert(data.message);
-
-
-          if (data.success) {
-            cart = []; // Clear cart after successful save
-            closeCart();
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('Something went wrong!');
-        });
-    }
-  </script>
 
 <script>
   document.querySelectorAll('button[data-type="add-to-cart"]')
 
   document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('.add-to-cart-button').forEach(button => {
-    button.addEventListener('click', function(event) {
-      event.preventDefault(); // Only for add-to-cart buttons
+    document.querySelectorAll('.add-to-cart-button').forEach(button => {
+      button.addEventListener('click', function(event) {
+        event.preventDefault(); // Only for add-to-cart buttons
 
-      const card = this.closest('.border.rounded-lg.shadow-md.p-4');
-      const serviceName = card.querySelector('h2').textContent.trim();
-      const servicePrice = card.querySelector('.text-blue-600').textContent.trim();
+        const card = this.closest('.border.rounded-lg.shadow-md.p-4');
+        const serviceName = card.querySelector('h2').textContent.trim();
+        const servicePrice = card.querySelector('.text-blue-600').textContent.trim();
 
-      cart.push({
-        name: serviceName,
-        price: servicePrice
+        cart.push({
+          name: serviceName,
+          price: servicePrice
+        });
+
+        alert(`${serviceName} added to cart!`);
       });
-
-      alert(`${serviceName} added to cart!`);
     });
   });
-});
-
 </script>
 
 <%- include('includes/footer') %>
