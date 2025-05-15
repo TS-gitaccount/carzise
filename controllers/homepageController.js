@@ -1,6 +1,7 @@
 const path = require("path");
 const pool = require("../db");
 const fs = require('fs');
+const nodemailer = require('nodemailer');
 
 exports.getDashboard = async (req, res) => {
     try {
@@ -66,5 +67,43 @@ exports.getDashboard = async (req, res) => {
             pagetitle: 'Internal Server Error',
             error: err.message
         });
+    }
+};
+
+exports.submitFeedback = async (req, res) => {
+    try {
+        const { name, email, phone, subject, message } = req.body;
+
+        // Create a transporter
+        const transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+                user: process.env.EMAIL_USER, // Replace with your email
+                pass: process.env.EMAIL_PASS // Replace with your email password or app password
+            }
+        });
+
+        // Email options
+        const mailOptions = {
+            from: email,
+            to: process.env.EMAIL_USER, // Replace with the email where you want to receive feedback
+            subject: `Feedback: ${subject}`,
+            text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nMessage: ${message}`
+        };
+
+        // Send email
+        await transporter.sendMail(mailOptions);
+
+        res.render("success", {
+            pdfName: null,
+            username: req.session.user?.username,
+            profile: req.session.user?.role,
+            pagetitle: "Success",
+            message: "Your feedback has been sent successfully!"
+        });
+
+    } catch (error) {
+        console.error('Error sending feedback:', error);
+        res.status(500).json({ success: false, message: 'Failed to send feedback.' });
     }
 };

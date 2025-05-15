@@ -26,5 +26,6 @@ router.get("/customerRegister", customerRegistrationController.getCustomerRegist
 router.post("/customerRegister", customerRegistrationController.customerRegister);
 router.get("/customer/downloadCard/:filename", customerRegistrationController.downloadCustomerCard);
 
+router.post('/submitFeedback', homepageController.submitFeedback);
 
 module.exports = router;
