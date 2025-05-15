@@ -62,74 +62,6 @@ exports.getCustomerDashboard = [isCustomer, async (req, res) => {
         const addresses = Array.isArray(addressResult) ? addressResult : [];
         const feedbacks = Array.isArray(feedbackResult) ? feedbackResult : [];
 
-//         const [invoice] = await pool.query(`
-//             SELECT 
-//             i.invoice_no, 
-//             i.invoice_time, 
-//             a.admin_username, 
-//             GROUP_CONCAT(m.medicine_name ORDER BY m.medicine_name SEPARATOR ', ') AS medicine_names,
-//             GROUP_CONCAT(m.medicine_composition ORDER BY m.medicine_name SEPARATOR ', ') AS medicine_compositions,
-//             GROUP_CONCAT(COALESCE(s.supplier_name, 'Unknown') ORDER BY m.medicine_name SEPARATOR ', ') AS supplier_names,
-//             GROUP_CONCAT(DATE_FORMAT(m.medicine_expiry_date, '%Y-%m-%d') ORDER BY m.medicine_name SEPARATOR ', ') AS medicine_expiry_dates,
-//             GROUP_CONCAT(m.medicine_price ORDER BY m.medicine_name SEPARATOR ', ') AS medicine_prices,
-//             GROUP_CONCAT(p.purchased_quantity ORDER BY m.medicine_name SEPARATOR ', ') AS purchased_quantities,
-//             GROUP_CONCAT(p.total_amt ORDER BY m.medicine_name SEPARATOR ', ') AS total_amt,
-//             ps.actual_amt_to_pay,
-//             i.prev_balance, 
-//             i.total_amt_to_pay,
-//             i.discount,
-//             i.net_total,
-//             py.payment_amt AS amount_paid, 
-//             py.payment_time AS payment_date,
-//             i.curr_balance    
-//             FROM invoice i
-//             JOIN purchase_sessions ps ON i.purchase_session_id = ps.purchase_session_id 
-//             JOIN purchases p ON ps.customer_id = p.customer_id AND ps.purchase_time = p.purchase_time
-//             JOIN medicines m ON p.medicine_id = m.medicine_id
-//             LEFT JOIN suppliers s ON p.supplier_id = s.supplier_id
-//             JOIN customers c ON ps.customer_id = c.customer_id  
-//             LEFT JOIN admin a ON i.admin_username = a.admin_username  
-//             LEFT JOIN payments py ON i.payment_id = py.payment_id  
-//             WHERE ps.customer_id = ?
-//             GROUP BY i.invoice_no
-//             ORDER BY i.invoice_time DESC
-//         `, [customerId]);
-
-
-
-
-//         const [medicines] = await pool.query(`SELECT m.medicine_id, m.medicine_name, m.medicine_composition, 
-//              m.medicine_price, m.medicine_type, m.medicine_expiry_date, m.medicine_img, SUM(s.stock_quantity) as total_stock
-//       FROM medicines m
-//       LEFT JOIN stocks s ON m.medicine_id = s.medicine_id
-//       WHERE m.medicine_expiry_date > CURDATE()
-//       GROUP BY m.medicine_id
-//       HAVING total_stock > 0`
-//         );
-//         const [cartItems] = await pool.query(`SELECT 
-//                 p.purchase_id,
-//                 m.medicine_id,
-//                 m.medicine_name,
-//                 m.medicine_composition,
-//                 m.medicine_price,
-//                 p.purchased_quantity,
-//                 (m.medicine_price * p.purchased_quantity) AS total_price,
-//                 m.medicine_img,
-//                 ps.purchase_time
-//             FROM purchases p
-//             JOIN purchase_sessions ps 
-//                 ON p.customer_id = ps.customer_id 
-//                 AND p.purchase_time = ps.purchase_time
-//             JOIN medicines m 
-//                 ON p.medicine_id = m.medicine_id
-//             WHERE p.customer_id = ?
-//             AND ps.purchase_time = (
-//                 SELECT MAX(purchase_time) 
-//                 FROM purchase_sessions 
-//                 WHERE customer_id = ?
-//             )
-// `, [customerId, customerId]);
-
         res.render('customerDashboard', {
             pagetitle: `Customer Panel - ${req.session.user.username}`,
             username: req.session.user.username,
@@ -138,9 +70,6 @@ exports.getCustomerDashboard = [isCustomer, async (req, res) => {
             customer,
             addresses,
             feedbacks,
-            // medicines: medicines || [],
-            // cartItems: cartItems || [],
-            // invoice
         });
 
     } catch (err) {
@@ -940,43 +869,75 @@ exports.downloadInvoice = [isCustomer, async (req, res) => {
     }
 }];
 
-exports.purchaseMedicine = [isCustomer, async (req, res) => {
+
+
+// Add a new API endpoint to handle adding cart items to the database
+exports.addCartItem = async (req, res) => {
     try {
-        const { medicineId, quantity } = req.body;
         const customerId = req.session.customerId;
+        const { service_name, service_price } = req.body;
 
-        // Fetch medicine price
-        const [medicine] = await pool.query('SELECT medicine_price FROM medicines WHERE medicine_id = ?', [medicineId]);
-
-        if (!medicine.length) {
-            return res.status(404).render("400", {
-                profile: req.session.user?.role,
-                username: req.session.user?.username,
-                pagetitle: "Bad Request",
-                error: "Invalid medicine ID"
-            });
+        if (!customerId) {
+            return res.status(401).json({ success: false, message: 'Unauthorized: Customer not logged in.' });
         }
 
-        // Insert purchase record
-        await pool.query(
-            'INSERT INTO purchases (customer_id, medicine_id, purchased_quantity) VALUES (?, ?, ?)',
-            [customerId, medicineId, quantity]
+        if (!service_name || !service_price) {
+            return res.status(400).json({ success: false, message: 'Service name and price are required.' });
+        }
+
+        // Insert the cart item into the database
+        await pool.execute(
+            'INSERT INTO cart_items (customer_id, service_name, service_price) VALUES (?, ?, ?)',
+            [customerId, service_name, service_price]
         );
 
+        res.status(200).json({ success: true, message: 'Item added to cart successfully.' });
+    } catch (error) {
+        console.error('Error adding item to cart:', error);
+        res.status(500).json({ success: false, message: 'Internal server error.' });
+    }
+};
+
+exports.payment = [isCustomer, async (req, res) => {
+    try {
+        const customerId = req.session.customerId;
+
+        const currentTime = new Date().toLocaleString('en-CA', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        }).replace(',', '').replace(/\//g, '-');
+
+        const cart = await pool.query('SELECT service_name, service_price, customer_id FROM cart_items WHERE customer_id = ? AND added_at = ?', [customerId, currentTime]);
+
+        // Render payment page with cart items and total
+        res.render('payment', {
+            cart: cart[0]
+        });
+
+    } catch (error) {
+        console.error('Error fetching cart items:', error);
+        res.status(500).json({ success: false, message: 'Internal server error.' });
+    }
+}];
+
+exports.paymentSuccess = [isCustomer, async (req, res) => {
+    try {
+        const customerId = req.session.customerId;
         res.render("success", {
             pdfName: null,
             username: req.session.user?.username,
             profile: "customer",
             pagetitle: "Success",
-            message: "Added to cart, wait for admin approval"
+            message: "Payment processed successfully!"
         });
-    } catch (err) {
-        console.error("Database Error:", err);
-        res.status(500).render("500", {
-            username: req.session.user?.username,
-            profile: "customer",
-            pagetitle: "Internal Server Error",
-            error: err.message
-        });
+
+    } catch (error) {
+        console.error('Error processing payment:', error);
+        res.status(500).json({ success: false, message: 'Internal server error.' });
     }
 }];

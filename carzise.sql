@@ -53,21 +53,20 @@ CREATE TABLE feedbacks (
 describe feedbacks;
 select * from feedbacks;
 
+CREATE TABLE cart_items (
+  cart_id INT PRIMARY KEY AUTO_INCREMENT,
+  customer_id INT,
+  service_name VARCHAR(255),
+  service_price DECIMAL(10, 2),
+  added_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE
+);
+describe cart_items;
+select * from cart_items;
+
 INSERT INTO admin (admin_username, admin_password) VALUES 
 ('admin1', '$2a$10$nw35QHHaWQXowfPROS70A.mjbeYj8kPhpE5mBowZmJRHOg/G6/x8a'), -- Admin@123
 ('admin2', '$2a$10$rth0XhJlmKXXd.HuU948cuIrTGa1XRyVsp9HNEeq7rE7l8XnXPhea'); -- SecurePass
 select * from admin;
 
-
--- this is carzise home page send your feedback
-CREATE TABLE `feedbacks` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `phone` varchar(20) DEFAULT NULL,
-  `subject` varchar(255) NOT NULL,
-  `message` text NOT NULL,
-  `created_at` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-select * from feedbacks;
+show tables;

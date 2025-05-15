@@ -19,171 +19,195 @@
     <div class="space-y-5">
       <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900">Success!</h2>
       <% if (message==='Your account has been created successfully.' ) { %>
-        <p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
-        <!-- Download Button -->
-        <% if (pdfName) { %>
-          <a href="/customer/downloadCard/<%= encodeURIComponent(pdfName) %>" class="inline-block px-6 py-3 text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 transition">
-            Download Card
-          </a>
-        <% } %>
+      <p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
+      <!-- Download Button -->
+      <% if (pdfName) { %>
+      <a href="/customer/downloadCard/<%= encodeURIComponent(pdfName) %>" class="inline-block px-6 py-3 text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 transition">
+        Download Card
+      </a>
+      <% } %>
     </div>
   </div>
 </div>
-      <% } %>
-      <% if (message==="Password has been reset successfully. Please login with your new password." ) { %>
-      <p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
-    </div>
-  </div>
+<% } %>
+<% if (message==="Password has been reset successfully. Please login with your new password." ) { %>
+<p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
+</div>
+</div>
 </div>
 <script>
   setTimeout(() => {
     window.location.href = "/login";
   }, 3000); // 3 seconds delay
 </script>
-      <% } %>
-      <% if (message==="Your Profile updated successfully!" ) { %>
-        <p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
-        <% if (pdfName) { %>
-          <a href="/customer/downloadCard/<%= encodeURIComponent(pdfName) %>" class="inline-block px-6 py-3 text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 transition">
-            Download Card
-          </a>
-        <% } %>
-    </div>
-  </div>
+<% } %>
+<% if (message==="Your Profile updated successfully!" ) { %>
+<p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
+<% if (pdfName) { %>
+<a href="/customer/downloadCard/<%= encodeURIComponent(pdfName) %>" class="inline-block px-6 py-3 text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 transition">
+  Download Card
+</a>
+<% } %>
 </div>
-      <% } %>
-      <% if (message==="Your address has been added successfully!" ) { %>
-        <p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
-      </div>
-    </div>
-  </div>
-  <script>
-    setTimeout(() => {
-      window.location.href = "/customer/CustomerDashboard";
-    }, 3000); // 3 seconds delay
-  </script>
-      <% } %>
-      <% if (message==="Your address has been deleted successfully!" ) { %>
-          <p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
-        </div>
-      </div>
-    </div>
-    <script>
-      setTimeout(() => {
-        window.location.href = "/customer/CustomerDashboard";
-      }, 3000); // 3 seconds delay
-    </script>
-      <% } %>
-      <% if (message==="Your address has been updated successfully!" ) { %>
-        <p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
-      </div>
-    </div>
-  </div>
-  <script>
-    setTimeout(() => {
-      window.location.href = "/customer/CustomerDashboard";
-    }, 3000); // 3 seconds delay
-  </script>
-      <% } %>
-      <% if (message==="Your feedback has been added successfully!" ) { %>
-        <p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
-      </div>
-    </div>
-  </div>
-  <script>
-    setTimeout(() => {
-      window.location.href = "/customer/CustomerDashboard";
-    }, 3000); // 3 seconds delay
-  </script>
-      <% } %>
-      <% if (message==="Your feedback has been deleted successfully!" ) { %>
-          <p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
-        </div>
-      </div>
-    </div>
-    <script>
-      setTimeout(() => {
-        window.location.href = "/customer/CustomerDashboard";
-      }, 3000); // 3 seconds delay
-    </script>
-      <% } %>
-      <% if (message==="Your feedback has been updated successfully!" ) { %>
-        <p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
-      </div>
-    </div>
-  </div>
-  <script>
-    setTimeout(() => {
-      window.location.href = "/customer/CustomerDashboard";
-    }, 3000); // 3 seconds delay
-  </script>
-      <% } %>
-      <% if (message==="Added to cart, wait for admin approval" ) { %>
-      <p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
-    </div>
-  </div>
+</div>
+</div>
+<% } %>
+<% if (message==="Your address has been added successfully!" ) { %>
+<p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
+</div>
+</div>
 </div>
 <script>
   setTimeout(() => {
     window.location.href = "/customer/CustomerDashboard";
   }, 3000); // 3 seconds delay
 </script>
-      <% } %>
-      <% if (message ==='Medicine added successfully!' ) { %>
-        <p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
-    </div>
-  </div>
+<% } %>
+<% if (message==="Your address has been deleted successfully!" ) { %>
+<p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
+</div>
+</div>
+</div>
+<script>
+  setTimeout(() => {
+    window.location.href = "/customer/CustomerDashboard";
+  }, 3000); // 3 seconds delay
+</script>
+<% } %>
+<% if (message==="Your address has been updated successfully!" ) { %>
+<p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
+</div>
+</div>
+</div>
+<script>
+  setTimeout(() => {
+    window.location.href = "/customer/CustomerDashboard";
+  }, 3000); // 3 seconds delay
+</script>
+<% } %>
+<% if (message==="Your feedback has been added successfully!" ) { %>
+<p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
+</div>
+</div>
+</div>
+<script>
+  setTimeout(() => {
+    window.location.href = "/customer/CustomerDashboard";
+  }, 3000); // 3 seconds delay
+</script>
+<% } %>
+<% if (message==="Your cart has been updated successfully!" ) { %>
+<p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
+</div>
+</div>
+</div>
+<script>
+  setTimeout(() => {
+    window.location.href = "/customer/CustomerDashboard";
+  }, 3000); // 3 seconds delay
+</script>
+<% } %>
+<% if (message==="Payment processed successfully!" ) { %>
+<p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
+</div>
+</div>
+</div>
+<script>
+  setTimeout(() => {
+    window.location.href = "/customer/CustomerDashboard";
+  }, 3000); // 3 seconds delay
+</script>
+<% } %>
+<% if (message==="Your feedback has been deleted successfully!" ) { %>
+<p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
+</div>
+</div>
+</div>
+<script>
+  setTimeout(() => {
+    window.location.href = "/customer/CustomerDashboard";
+  }, 3000); // 3 seconds delay
+</script>
+<% } %>
+<% if (message==="Your feedback has been updated successfully!" ) { %>
+<p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
+</div>
+</div>
+</div>
+<script>
+  setTimeout(() => {
+    window.location.href = "/customer/CustomerDashboard";
+  }, 3000); // 3 seconds delay
+</script>
+<% } %>
+<% if (message==="Added to cart, wait for admin approval" ) { %>
+<p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
+</div>
+</div>
+</div>
+<script>
+  setTimeout(() => {
+    window.location.href = "/customer/CustomerDashboard";
+  }, 3000); // 3 seconds delay
+</script>
+<% } %>
+<% if (message ==='Medicine added successfully!' ) { %>
+<p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
+</div>
+</div>
 </div>
 <script>
   setTimeout(() => {
     window.location.href = "/admin/adminDashboard";
   }, 3000); // 3 seconds delay
 </script>
-      <% } %>
-      <% if (message==='Medicine deleted successfully!' ) { %>
-      <p class="text-gray-600 text-sm sm:text-base mb-12">
-        <%= message %>
-      </p>
-    </div>
-  </div>
+<% } %>
+<% if (message==='Medicine deleted successfully!' ) { %>
+<p class="text-gray-600 text-sm sm:text-base mb-12">
+  <%= message %>
+</p>
+</div>
+</div>
 </div>
 <script>
   setTimeout(() => {
     window.location.href = "/admin/adminDashboard";
   }, 3000); // 3 seconds delay
 </script>
-      <% } %>
-      <% if (message==='Medicine Edited successfully!' ) { %>
-        <p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
-    </div>
-  </div>
+<% } %>
+<% if (message==='Medicine Edited successfully!' ) { %>
+<p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
+</div>
+</div>
 </div>
 <script>
   setTimeout(() => {
     window.location.href = "/admin/adminDashboard";
   }, 3000); // 3 seconds delay
 </script>
-      <% } %>
-      <% if (message==="Customer deleted successfully!" ) { %>
-      <p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
-    </div>
-  </div>
+<% } %>
+<% if (message==="Customer deleted successfully!" ) { %>
+<p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
+</div>
+</div>
 </div>
 <script>
   setTimeout(() => {
     window.location.href = "/admin/adminDashboard";
   }, 3000); // 3 seconds delay
 </script>
-      <% } %>
-      <% if (message==="Customer updated successfully!" ) { %>
-        <p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
-    </div>
-  </div>
+<% } %>
+<% if (message==="Customer details updated successfully!" ) { %>
+<p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
+</div>
+</div>
 </div>
 <script>
   setTimeout(() => {
     window.location.href = "/admin/adminDashboard";
   }, 3000); // 3 seconds delay
 </script>
-      <% } %>
+<% } %>
+
+
 <%- include('includes/footer') %>

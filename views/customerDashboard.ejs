@@ -797,22 +797,92 @@
     form.classList.toggle('hidden');
   }
 
-  // Toggle add feedback form
-  function toggleAddPurchaseForm() {
-    const form = document.getElementById('add-purchase-form');
-    form.classList.toggle('hidden');
-  }
-
-
-
-  // Initialize the first tab on page load
   document.addEventListener('DOMContentLoaded', function() {
-    // Set the first tab as active by default
     openTab('purchase');
   });
+
+// Toggle add purchase form
+function toggleAddPurchaseForm() {
+    let cartListHtml = '';
+    let total = 0;
+
+    if (cart.length === 0) {
+        cartListHtml = '<p class="text-gray-500">Your cart is empty.</p>';
+    } else {
+        for (const item of cart) {
+            const priceNumber = parseInt(item.price.replace(/[^\d]/g, ''));
+            total += priceNumber;
+            cartListHtml += `
+                <div class="flex justify-between border-b py-2">
+                    <span>${item.name}</span>
+                    <span>${item.price}</span>
+                </div>`;
+        }
+
+        // Add total row
+        cartListHtml += `
+            <hr class="my-4 border-t-2">
+            <div class="flex justify-between text-lg font-bold text-blue-800">
+                <span>Total:</span>
+                <span>₹${total}</span>
+            </div>`;
+    }
+
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50';
+    modal.innerHTML = `
+        <div class="bg-white p-6 rounded-lg shadow-lg w-96 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-2xl font-bold mb-4 text-center">Your Cart</h2>
+            <div>${cartListHtml}</div>
+            <div class="mt-6 flex justify-between">
+                <button onclick="closeCart()" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Close</button>
+                <button onclick="checkout()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Checkout</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+  }
+
+  function closeCart() {
+    document.querySelector('.fixed.inset-0').remove();
+  }
+
+  // Update the checkout function to send each cart item to the server
+  function checkout() {
+    if (cart.length === 0) {
+        alert('Your cart is empty!');
+        return;
+    }
+
+    // Send each cart item to the server
+    cart.forEach(item => {
+        fetch('/customer/customerDashboard/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                service_name: item.name,
+                service_price: item.price.replace(/[^\d.]/g, '')
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                console.error('Failed to add item to cart:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error adding item to cart:', error);
+        });
+    });
+
+    window.location.href = '/customer/payment';
+
+    cart = []; // Clear cart after checkout
+    closeCart();
+  }
 </script>
-
-
 
 <script>
   function toggleDropdown(id) {
@@ -825,9 +895,9 @@
   let cart = [];
 
   // Attach click events to all Add to Purchase buttons
-  document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('button[data-type="add-to-cart"]').forEach(button => {
-      button.addEventListener('click', function (event) {
+      button.addEventListener('click', function(event) {
         event.preventDefault(); // prevent form submit
         const card = this.closest('.border.rounded-lg.shadow-md.p-4');
         const serviceName = card.querySelector('h2').textContent.trim();
@@ -843,81 +913,7 @@
       });
     });
   });
-
-  // Toggle and show cart items with total
-  function toggleAddPurchaseForm() {
-    let cartListHtml = '';
-    let total = 0;
-
-    if (cart.length === 0) {
-      cartListHtml = '<p class="text-gray-500">Your cart is empty.</p>';
-    } else {
-      cart.forEach(item => {
-        const priceNumber = parseInt(item.price.replace(/[^\d]/g, ''));
-        total += priceNumber;
-        cartListHtml += `
-          <div class="flex justify-between border-b py-2">
-            <span>${item.name}</span>
-            <span>${item.price}</span>
-          </div>`;
-      });
-
-      // Add total row
-      cartListHtml += `
-        <hr class="my-4 border-t-2">
-        <div class="flex justify-between text-lg font-bold text-blue-800">
-          <span>Total:</span>
-          <span>₹${total}</span>
-        </div>`;
-    }
-
-    const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50';
-    modal.innerHTML = `
-      <div class="bg-white p-6 rounded-lg shadow-lg w-96 max-h-[90vh] overflow-y-auto">
-        <h2 class="text-2xl font-bold mb-4 text-center">Your Cart</h2>
-        <div>${cartListHtml}</div>
-        <div class="mt-6 flex justify-between">
-          <button onclick="closeCart()" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Close</button>
-          <button onclick="checkout()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Checkout</button>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(modal);
-  }
-
-  function closeCart() {
-    document.querySelector('.fixed.inset-0').remove();
-  }
-
-  function checkout() {
-    if (cart.length === 0) {
-      alert('Your cart is empty!');
-      return;
-    }
-
-    fetch('/customerDashboard/cart/checkout', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ cart })
-    })
-      .then(response => response.json())
-      .then(data => {
-        alert(data.message);
-        if (data.success) {
-          cart = []; // Clear cart after successful save
-          closeCart();
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('Something went wrong!');
-      });
-  }
 </script>
-
 
 <script>
   document.querySelectorAll('button[data-type="add-to-cart"]')

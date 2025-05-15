@@ -1,0 +1,109 @@
+<%- include('includes/header') %>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+<style>
+  body {
+    font-family: 'Roboto', sans-serif;
+    background: url('https://www.transparenttextures.com/patterns/subtle-white-feathers.png');
+  }
+</style>
+
+<body class="bg-white text-gray-800">
+
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <header class="flex justify-between items-center mb-8">
+      <a href="/customer/customerDashboard" class="text-blue-600 hover:underline">Back to shop</a>
+      <h1 class="text-2xl font-bold text-center flex-1">Payment Gateway</h1>
+    </header>
+
+    <div class="grid md:grid-cols-2 gap-8 bg-white p-6 rounded-lg shadow-lg">
+      <!-- Payment Section -->
+      <div>
+        <h2 class="text-xl font-semibold mb-4">Payment</h2>
+
+        <div class="flex items-center space-x-2 mb-4">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" class="w-10 h-6">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" class="w-10 h-6">
+        </div>
+
+        <form class="space-y-4">
+          <div>
+            <label class="block text-sm mb-1">Cardholder’s name</label>
+            <input type="text" placeholder="Linda Williams" class="w-full border px-3 py-2 rounded-md">
+          </div>
+
+          <div>
+            <label class="block text-sm mb-1">Card Number</label>
+            <input type="text" placeholder="0125 6780 4567 9909" class="w-full border px-3 py-2 rounded-md">
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm mb-1">Expiry date</label>
+              <input type="text" placeholder="YY/MM" class="w-full border px-3 py-2 rounded-md">
+            </div>
+            <div>
+              <label class="block text-sm mb-1 flex items-center">CVV <span class="ml-1 text-gray-400 cursor-help">❔</span></label>
+              <input type="text" placeholder="•••" class="w-full border px-3 py-2 rounded-md">
+            </div>
+          </div>
+
+          <div class="flex items-center">
+            <input type="checkbox" id="saveCard" class="mr-2">
+            <label for="saveCard" class="text-sm">Save card details to wallet</label>
+          </div>
+        </form>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
+        <div class="space-y-4">
+          <div class="flex flex-col">
+            <% cart.forEach(item => { %>
+            <div class="flex justify-between">
+                <span><%= item.service_name %></span>
+                <span>₹<%= item.service_price %></span>
+            </div>
+            <% }); %>
+          </div>
+
+          <% 
+          let total = 0;
+          if (Array.isArray(cart)) {
+            cart.forEach(item => {
+            const priceNumber = parseFloat(item.service_price.replace(/[^\d.]/g, ''));
+            total += priceNumber;
+            });
+          }
+          total = total.toFixed(2); // Ensure total has two decimal points
+        %>
+
+          <div class="border-t pt-4 space-y-2 text-sm">
+            <div class="flex justify-between">
+              <span>Subtotal</span>
+              <span>₹<%= total %></span>
+            </div>
+            <div class="flex justify-between">
+              <span>Delivery</span>
+              <span class="text-green-600 font-medium">Free</span>
+            </div>
+            <div class="flex justify-between font-semibold text-base">
+              <span>Total to pay</span>
+              <span>₹<%= total %></span>
+            </div>
+            <a href="#" class="text-blue-600 hover:underline text-sm">Add promo code</a>
+          </div>
+
+          <form action="/customer/payment/success" method="POST">
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-md font-semibold">
+              Place order
+            </button>
+          </form>
+
+          <p class="text-center text-sm text-gray-500 mt-2">Complimentary Shipping & Returns</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <%- include('includes/footer') %>

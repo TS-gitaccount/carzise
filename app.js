@@ -51,8 +51,6 @@ app.get('/AutoNova_index', (req, res) => {
 
 //carzise home feedback form
 
-
-
 // Sign and encrypt session data
 app.use(session({
     secret: process.env.SESSION_SECRET,
