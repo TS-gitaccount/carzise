@@ -40,6 +40,7 @@ CREATE TABLE customer_addresses (
     FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE
 );
 describe customer_addresses;
+select * from customer_addresses;
 
 -- Customers feedbacks Table
 CREATE TABLE feedbacks (
