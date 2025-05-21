@@ -1,5 +1,6 @@
 const express = require('express');
 const customerController = require('../controllers/customerController');
+const pool = require('../db');
 const router = express.Router();
 
 // Session check middleware
@@ -39,6 +40,7 @@ router.post("/customerDashboard/address/deleteOrEdit", customerController.delete
 router.post("/customerDashboard/feedback/deleteOrEdit", customerController.deleteOrEditFeedback);
 
 router.post("/customerDashboard/cart/add", customerController.addCartItem);
+
 router.get("/payment", customerController.payment);
 router.post("/payment/success", customerController.paymentSuccess);
 

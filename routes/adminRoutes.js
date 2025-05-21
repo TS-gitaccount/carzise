@@ -29,5 +29,13 @@ router.use(checkAdmin);
 
 router.get('/adminDashboard', adminController.getAdminDashboard);
 router.post('/adminDashboard/editDeleteCustomer', adminController.deleteOrEditCustomer);
+router.post('/adminDashboard/replyFeedback', adminController.replyToFeedback);
+router.post('/adminDashboard/addService', adminController.addService);
+router.post('/adminDashboard/deleteService', adminController.deleteService);
+// Route to handle editing a service
+router.post('/adminDashboard/editService', adminController.editService);
+
+
+
 
 module.exports = router;

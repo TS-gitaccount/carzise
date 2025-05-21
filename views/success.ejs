@@ -5,29 +5,29 @@
 
 
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-white py-12 px-6">
-  <div class="max-w-sm sm:max-w-md w-full bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-100 text-center space-y-6">
-    <!-- Success Icon -->
-    <div class="flex justify-center">
-      <div class="h-20 w-20 bg-green-100 rounded-full flex items-center justify-center transform transition-transform hover:scale-110 duration-300">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-green-600" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 00-1.414 0L9 11.586 5.707 8.293a1 1 0 10-1.414 1.414l4 4a1 1 0 001.414 0l7-7a1 1 0 000-1.414z" clip-rule="evenodd" />
-        </svg>
-      </div>
-    </div>
+<div class="max-w-sm sm:max-w-md w-full bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-100 text-center space-y-6">
+<!-- Success Icon -->
+<div class="flex justify-center">
+<div class="h-20 w-20 bg-green-100 rounded-full flex items-center justify-center transform transition-transform hover:scale-110 duration-300">
+<svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-green-600" viewBox="0 0 20 20" fill="currentColor">
+<path fill-rule="evenodd" d="M16.707 5.293a1 1 0 00-1.414 0L9 11.586 5.707 8.293a1 1 0 10-1.414 1.414l4 4a1 1 0 001.414 0l7-7a1 1 0 000-1.414z" clip-rule="evenodd" />
+</svg>
+</div>
+</div>
 
-    <!-- Success Message -->
-    <div class="space-y-5">
-      <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900">Success!</h2>
-      <% if (message==='Your account has been created successfully.' ) { %>
-      <p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
-      <!-- Download Button -->
-      <% if (pdfName) { %>
-      <a href="/customer/downloadCard/<%= encodeURIComponent(pdfName) %>" class="inline-block px-6 py-3 text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 transition">
-        Download Card
-      </a>
-      <% } %>
-    </div>
-  </div>
+<!-- Success Message -->
+<div class="space-y-5">
+<h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900">Success!</h2>
+<% if (message==='Your account has been created successfully.' ) { %>
+<p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
+<!-- Download Button -->
+<% if (pdfName) { %>
+<a href="/customer/downloadCard/<%= encodeURIComponent(pdfName) %>" class="inline-block px-6 py-3 text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 transition">
+Download Card
+</a>
+<% } %>
+</div>
+</div>
 </div>
 <% } %>
 <% if (message==="Password has been reset successfully. Please login with your new password." ) { %>
@@ -36,16 +36,16 @@
 </div>
 </div>
 <script>
-  setTimeout(() => {
-    window.location.href = "/login";
-  }, 3000); // 3 seconds delay
+setTimeout(() => {
+window.location.href = "/login";
+}, 3000); // 3 seconds delay
 </script>
 <% } %>
 <% if (message==="Your Profile updated successfully!" ) { %>
 <p class="text-gray-600 text-sm sm:text-base mb-12"><%= message %></p>
 <% if (pdfName) { %>
 <a href="/customer/downloadCard/<%= encodeURIComponent(pdfName) %>" class="inline-block px-6 py-3 text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 transition">
-  Download Card
+Download Card
 </a>
 <% } %>
 </div>
@@ -58,9 +58,9 @@
 </div>
 </div>
 <script>
-  setTimeout(() => {
-    window.location.href = "/customer/CustomerDashboard";
-  }, 3000); // 3 seconds delay
+setTimeout(() => {
+window.location.href = "/customer/CustomerDashboard";
+}, 3000); // 3 seconds delay
 </script>
 <% } %>
 <% if (message==="Your feedback has been sent successfully!" ) { %>
@@ -69,9 +69,9 @@
 </div>
 </div>
 <script>
-  setTimeout(() => {
-    window.location.href = "/dashboard";
-  }, 3000); // 3 seconds delay
+setTimeout(() => {
+window.location.href = "/dashboard";
+}, 3000); // 3 seconds delay
 </script>
 <% } %>
 <% if (message==="Your address has been deleted successfully!" ) { %>
@@ -80,9 +80,9 @@
 </div>
 </div>
 <script>
-  setTimeout(() => {
-    window.location.href = "/customer/CustomerDashboard";
-  }, 3000); // 3 seconds delay
+setTimeout(() => {
+window.location.href = "/customer/CustomerDashboard";
+}, 3000); // 3 seconds delay
 </script>
 <% } %>
 <% if (message==="Your address has been updated successfully!" ) { %>
@@ -91,9 +91,9 @@
 </div>
 </div>
 <script>
-  setTimeout(() => {
-    window.location.href = "/customer/CustomerDashboard";
-  }, 3000); // 3 seconds delay
+setTimeout(() => {
+window.location.href = "/customer/CustomerDashboard";
+}, 3000); // 3 seconds delay
 </script>
 <% } %>
 <% if (message==="Your feedback has been added successfully!" ) { %>
@@ -102,9 +102,9 @@
 </div>
 </div>
 <script>
-  setTimeout(() => {
-    window.location.href = "/customer/CustomerDashboard";
-  }, 3000); // 3 seconds delay
+setTimeout(() => {
+window.location.href = "/customer/CustomerDashboard";
+}, 3000); // 3 seconds delay
 </script>
 <% } %>
 <% if (message==="Your cart has been updated successfully!" ) { %>
@@ -113,9 +113,9 @@
 </div>
 </div>
 <script>
-  setTimeout(() => {
-    window.location.href = "/customer/CustomerDashboard";
-  }, 3000); // 3 seconds delay
+setTimeout(() => {
+window.location.href = "/customer/CustomerDashboard";
+}, 3000); // 3 seconds delay
 </script>
 <% } %>
 <% if (message==="Payment processed successfully!" ) { %>
@@ -124,9 +124,9 @@
 </div>
 </div>
 <script>
-  setTimeout(() => {
-    window.location.href = "/customer/CustomerDashboard";
-  }, 3000); // 3 seconds delay
+setTimeout(() => {
+window.location.href = "/customer/CustomerDashboard";
+}, 3000); // 3 seconds delay
 </script>
 <% } %>
 <% if (message==="Your feedback has been deleted successfully!" ) { %>
@@ -135,9 +135,9 @@
 </div>
 </div>
 <script>
-  setTimeout(() => {
-    window.location.href = "/customer/CustomerDashboard";
-  }, 3000); // 3 seconds delay
+setTimeout(() => {
+window.location.href = "/customer/CustomerDashboard";
+}, 3000); // 3 seconds delay
 </script>
 <% } %>
 <% if (message==="Your feedback has been updated successfully!" ) { %>
@@ -146,9 +146,9 @@
 </div>
 </div>
 <script>
-  setTimeout(() => {
-    window.location.href = "/customer/CustomerDashboard";
-  }, 3000); // 3 seconds delay
+setTimeout(() => {
+window.location.href = "/customer/CustomerDashboard";
+}, 3000); // 3 seconds delay
 </script>
 <% } %>
 <% if (message==="Added to cart, wait for admin approval" ) { %>
@@ -157,9 +157,9 @@
 </div>
 </div>
 <script>
-  setTimeout(() => {
-    window.location.href = "/customer/CustomerDashboard";
-  }, 3000); // 3 seconds delay
+setTimeout(() => {
+window.location.href = "/customer/CustomerDashboard";
+}, 3000); // 3 seconds delay
 </script>
 <% } %>
 <% if (message ==='Medicine added successfully!' ) { %>
@@ -168,22 +168,22 @@
 </div>
 </div>
 <script>
-  setTimeout(() => {
-    window.location.href = "/admin/adminDashboard";
-  }, 3000); // 3 seconds delay
+setTimeout(() => {
+window.location.href = "/admin/adminDashboard";
+}, 3000); // 3 seconds delay
 </script>
 <% } %>
 <% if (message==='Medicine deleted successfully!' ) { %>
 <p class="text-gray-600 text-sm sm:text-base mb-12">
-  <%= message %>
+<%= message %>
 </p>
 </div>
 </div>
 </div>
 <script>
-  setTimeout(() => {
-    window.location.href = "/admin/adminDashboard";
-  }, 3000); // 3 seconds delay
+setTimeout(() => {
+window.location.href = "/admin/adminDashboard";
+}, 3000); // 3 seconds delay
 </script>
 <% } %>
 <% if (message==='Medicine Edited successfully!' ) { %>
@@ -192,9 +192,9 @@
 </div>
 </div>
 <script>
-  setTimeout(() => {
-    window.location.href = "/admin/adminDashboard";
-  }, 3000); // 3 seconds delay
+setTimeout(() => {
+window.location.href = "/admin/adminDashboard";
+}, 3000); // 3 seconds delay
 </script>
 <% } %>
 <% if (message==="Customer deleted successfully!" ) { %>
@@ -203,9 +203,9 @@
 </div>
 </div>
 <script>
-  setTimeout(() => {
-    window.location.href = "/admin/adminDashboard";
-  }, 3000); // 3 seconds delay
+setTimeout(() => {
+window.location.href = "/admin/adminDashboard";
+}, 3000); // 3 seconds delay
 </script>
 <% } %>
 <% if (message==="Customer details updated successfully!" ) { %>
@@ -214,9 +214,9 @@
 </div>
 </div>
 <script>
-  setTimeout(() => {
-    window.location.href = "/admin/adminDashboard";
-  }, 3000); // 3 seconds delay
+setTimeout(() => {
+window.location.href = "/admin/adminDashboard";
+}, 3000); // 3 seconds delay
 </script>
 <% } %>
 

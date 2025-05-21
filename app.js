@@ -6,6 +6,8 @@ const session = require('express-session');
 const rateLimit = require("express-rate-limit");
 require('dotenv').config();
 const feedbackRoutes = require('./routes/feedbackRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+
 
 const app = express();
 
@@ -138,4 +140,5 @@ function gracefulShutdown(signal) {
 // Handle termination signals
 process.on("SIGINT", () => gracefulShutdown("SIGINT"));  // Ctrl + C
 process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));  // Deployment shutdown
+
 

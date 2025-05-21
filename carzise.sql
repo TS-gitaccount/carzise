@@ -21,6 +21,12 @@ CREATE TABLE customers (
     customer_password VARCHAR(255) NOT NULL,
     customer_balance_amt DECIMAL(10, 2) DEFAULT 0
 );
+
+ALTER TABLE customers
+MODIFY COLUMN customer_ph_no VARCHAR(10) NOT NULL UNIQUE,
+ADD CONSTRAINT chk_customer_ph_no_length CHECK (CHAR_LENGTH(customer_ph_no) = 10);
+
+
 CREATE INDEX idx_customer_email ON customers(customer_email);
 CREATE INDEX idx_customer_ph_no ON customers(customer_ph_no);
 describe customers;
@@ -62,12 +68,24 @@ CREATE TABLE cart_items (
   added_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE
 );
+
 describe cart_items;
 select * from cart_items;
+
+-- Create the service table
+CREATE TABLE service (
+	service_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+describe service;
+select * from service;
 
 INSERT INTO admin (admin_username, admin_password) VALUES 
 ('admin1', '$2a$10$nw35QHHaWQXowfPROS70A.mjbeYj8kPhpE5mBowZmJRHOg/G6/x8a'), -- Admin@123
 ('admin2', '$2a$10$rth0XhJlmKXXd.HuU948cuIrTGa1XRyVsp9HNEeq7rE7l8XnXPhea'); -- SecurePass
 select * from admin;
 
-show tables;

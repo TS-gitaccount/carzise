@@ -1,155 +1,1451 @@
 <%- include('includes/header') %>
 
 <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    .carzise{
-      display: flex;
-      flex-direction: row;
-    }
-  </style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  .carzise {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .tab-content {
+    display: none;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+</style>
+
 <div class="bg-gradient-to-br from-blue-50 to-white mx-auto p-6">
-  <h1 class="text-3xl font-semibold text-gray-700 text-center mb-6">Admin Panel</h1>
+  <h1 class="text-3xl font-semibold text-gray-700 text-center mb-6">Admin Dashboard</h1>
 
-  <% if (customers?.length > 0) { %>
-  <h2 class="text-2xl font-semibold text-gray-600 mt-10 mb-4">Manage Customers</h2>
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mx-auto">
-    <% customers.forEach(customer => { %>
-    <div class="border rounded-lg shadow-md p-4 bg-white hover:shadow-lg transition">
-      <div class="flex justify-center mb-4">
-        <img src="<%= customer.customer_photo %>" alt="Profile Photo" class="w-28 h-28 rounded-full border-4 border-white shadow-lg object-cover">
+  <!-- Tab Navigation -->
+  <div class="mb-6 flex overflow-x-auto space-x-1 border-b border-gray-200">
+    <button class="tab-button px-4 py-2 text-gray-600 hover:text-blue-600 font-medium border-b-2 border-transparent hover:border-blue-500 active" data-tab="overview">Overview</button>
+    <button class="tab-button px-4 py-2 text-gray-600 hover:text-blue-600 font-medium border-b-2 border-transparent hover:border-blue-500" data-tab="customers">Customers</button>
+    <button class="tab-button px-4 py-2 text-gray-600 hover:text-blue-600 font-medium border-b-2 border-transparent hover:border-blue-500" data-tab="services">Services</button>
+    <!-- <button class="tab-button px-4 py-2 text-gray-600 hover:text-blue-600 font-medium border-b-2 border-transparent hover:border-blue-500" data-tab="appointments">Appointments</button> -->
+    <button class="tab-button px-4 py-2 text-gray-600 hover:text-blue-600 font-medium border-b-2 border-transparent hover:border-blue-500" data-tab="feedback">Feedback</button>
+    <button class="tab-button px-4 py-2 text-gray-600 hover:text-blue-600 font-medium border-b-2 border-transparent hover:border-blue-500" data-tab="carts">Cart Items</button>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="tab-container">
+    <!-- OVERVIEW TAB -->
+    <div id="overview-tab" class="tab-content active">
+      <!-- Dashboard Summary Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-blue-600 text-white rounded-lg shadow p-5">
+          <div class="flex items-center">
+            <i class="fas fa-users fa-2x mr-4"></i>
+            <div>
+              <p class="text-lg font-semibold">150</p>
+              <p class="text-sm">Total Users</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-yellow-500 text-white rounded-lg shadow p-5">
+          <div class="flex items-center">
+            <i class="fas fa-calendar-check fa-2x mr-4"></i>
+            <div>
+              <p class="text-lg font-semibold">120</p>
+              <p class="text-sm">completed</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-green-500 text-white rounded-lg shadow p-5">
+          <div class="flex items-center">
+            <i class="fas fa-cogs fa-2x mr-4"></i>
+            <div>
+              <p class="text-lg font-semibold">30</p>
+              <p class="text-sm">Services</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-red-500 text-white rounded-lg shadow p-5">
+          <div class="flex items-center">
+            <i class="fas fa-envelope fa-2x mr-4"></i>
+            <div>
+              <p class="text-lg font-semibold">50</p>
+              <p class="text-sm">Contact Queries</p>
+            </div>
+          </div>
+        </div>
       </div>
-      <h2 class="text-lg font-semibold text-gray-800 text-center">
-        <%= customer.customer_id %>: <%= customer.customer_name %> <%= customer.customer_created_at %>
-      </h2>
-      <p class="text-gray-600 text-sm"><strong>Email:</strong> <%= customer.customer_email %></p>
-      <p class="text-gray-600 text-sm"><strong>Phone:</strong> <%= customer.customer_ph_no %></p>
-      <p class="text-blue-600 font-bold text-lg mt-2 text-center">Balance: &#8377;<%= customer.customer_balance_amt %></p>
 
-      <% customer.addresses.forEach(address => { %>
-      <p class="text-gray-600 text-sm truncate"><strong>Address:</strong> <%= address.street %>, <%= address.city %>, <%= address.state %> - <%= address.zip_code %> (<%= address.address_type %>)</p>
-      <% }); %>
+      <!-- Analytics Charts -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow p-4">
+          <h3 class="text-lg font-semibold text-gray-700 mb-4">Monthly Service Bookings</h3>
+          <canvas id="bookingsChart" height="250"></canvas>
+        </div>
+        <div class="bg-white rounded-lg shadow p-4">
+          <h3 class="text-lg font-semibold text-gray-700 mb-4">Customer Feedback Ratings</h3>
+          <canvas id="ratingsChart" height="250"></canvas>
+        </div>
+      </div>
 
-      <% customer.feedbacks.forEach(feedback => { %>
-      <p class="text-gray-600 text-sm truncate"><strong>Feedback Date:</strong> <%= feedback.feedback_date %></p>
-      <p class="text-gray-600 text-sm truncate"><strong>Rating:</strong> <%= feedback.rating %> / 5</p>
-      <p class="text-gray-600 text-sm truncate"><strong>Feedback:</strong> <%= feedback.feedback_text %></p>
-      <% }); %>
+      <!-- Recent Customer -->
+      <div class="bg-white rounded-lg shadow p-4 mb-8">
+        <h3 class="text-lg font-semibold text-gray-700 mb-4">Recent Customers</h3>
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-white">
+            <thead>
+              <tr>
+                <th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase">Customer ID</th>
+                <th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase">Name</th>
+                <th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase">Email</th>
+                <th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase">Joined At</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% customers.slice(-5).forEach(customer => { %>
+              <tr>
+                <td class="py-2 px-4 border-b border-gray-200"><%= customer.customer_id %></td>
+                <td class="py-2 px-4 border-b border-gray-200"><%= customer.customer_name %></td>
+                <td class="py-2 px-4 border-b border-gray-200"><%= customer.customer_email %></td>
+                <td class="py-2 px-4 border-b border-gray-200"><%= customer.customer_created_at %></td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-      <div class="flex gap-2 mt-3">
-        <form action="/admin/adminDashboard/editDeleteCustomer" method="POST" class="w-full">
-          <input type="hidden" name="customer_id" value="<%= customer.customer_id %>">
-          <button type="submit" name="action" value="delete" class="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition" onclick="return confirm('Are you sure you want to delete this customer?')">Delete</button>
+    <!-- CUSTOMERS TAB -->
+    <div id="customers-tab" class="tab-content">
+      <div class="mb-6 flex justify-between items-center">
+        <h2 class="text-2xl font-semibold text-gray-600">Manage Customers</h2>
+
+        <!-- Search & Filter -->
+        <div class="flex space-x-4">
+          <div class="relative">
+            <input type="text" id="customer-search" placeholder="Search customers..." class="border rounded-lg py-2 px-4 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+          <select id="customer-filter" class="border rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">All Customers</option>
+            <option value="balance-high">Balance: High to Low</option>
+            <option value="balance-low">Balance: Low to High</option>
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Customer list here - using your existing code -->
+      <% if (customers?.length > 0) { %>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mx-auto">
+        <% customers.forEach(customer => { %>
+        <div class="border rounded-lg shadow-md p-4 bg-white hover:shadow-lg transition ">
+          <div class="flex justify-center mb-4">
+            <img src="<%= customer.customer_photo %>" alt="Profile Photo" class="w-28 h-28 rounded-full border-4 border-white shadow-lg object-cover">
+          </div>
+          <h2 class="text-lg font-semibold text-gray-800 text-center">
+            <%= customer.customer_id %>: <%= customer.customer_name %> <%= customer.customer_created_at %>
+          </h2>
+          <p class="text-gray-600 text-sm"><strong>Email:</strong> <%= customer.customer_email %></p>
+          <p class="text-gray-600 text-sm"><strong>Phone:</strong> <%= customer.customer_ph_no %></p>
+          <p class="text-blue-600 font-bold text-lg mt-2 text-center">Balance: &#8377;<%= customer.customer_balance_amt %></p>
+
+          <% customer.addresses.slice(-2).forEach(address => { %>
+          <p class="text-gray-600 text-sm truncate"><strong>Address:</strong> <%= address.street %>, <%= address.city %>, <%= address.state %> - <%= address.zip_code %> (<%= address.address_type %>)</p>
+          <% }); %>
+
+
+
+          <div class="flex gap-2 mt-3">
+            <form action="/admin/adminDashboard/editDeleteCustomer" method="POST" class="w-full">
+              <input type="hidden" name="customer_id" value="<%= customer.customer_id %>">
+              <button type="submit" name="action" value="delete" class="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition" onclick="return confirm('Are you sure you want to delete this customer?')">Delete</button>
+            </form>
+          </div>
+
+          <button onclick="toggleEditForm('customer-<%= customer.customer_id %>')" class="mt-2 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">Edit</button>
+
+          <!-- Edit Customer Form -->
+          <form id="edit-form-customer-<%= customer.customer_id %>" action="/admin/adminDashboard/editDeleteCustomer" method="POST" enctype="multipart/form-data" class="mt-4 space-y-2 hidden">
+            <input type="hidden" name="customer_id" value="<%= customer.customer_id %>" <label class="block text-sm font-medium text-gray-700">Name</label>
+            <input type="text" name="customer_name" value="<%= customer.customer_name %>" required class="w-full border p-2 rounded">
+
+            <label class="block text-sm font-medium text-gray-700">Email</label>
+            <input type="email" name="customer_email" value="<%= customer.customer_email %>" required class="w-full border p-2 rounded">
+
+            <label class="block text-sm font-medium text-gray-700">Phone</label>
+            <input type="text" name="customer_ph_no" value="<%= customer.customer_ph_no %>" required class="w-full border p-2 rounded">
+
+            <label class="block text-sm font-medium text-gray-700">Profile Photo</label>
+            <input type="file" id="photo-<%= customer.customer_id %>" name="customer_photo" accept="image/*" class="w-full border p-2 rounded" onchange="previewImage(event, 'customer-<%= customer.customer_id %>')">
+            <div class="mt-3 flex items-center gap-4">
+              <img id="preview-customer-<%= customer.customer_id %>" class="w-16 h-16 rounded-full border border-gray-300 object-cover hidden" alt="Profile Preview">
+              <button type="button" id="remove-image-customer-<%= customer.customer_id %>" class="hidden text-sm text-red-500 hover:text-red-700 font-medium" onclick="removeImage('customer-<%= customer.customer_id %>')">Remove</button>
+            </div>
+
+            <label class="block text-sm font-medium text-gray-700">Balance Amount</label>
+            <input type="number" name="customer_balance_amt" value="<%= customer.customer_balance_amt %>" required class="w-full border p-2 rounded">
+
+            <button type="submit" name="action" value="edit" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700">Save Changes</button>
+          </form>
+
+          <% customer.addresses.slice(-2).forEach(address => { %>
+          <button onclick="toggleEditForm('address-<%= address.address_id %>')" class="mt-2 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">Edit Address</button>
+
+          <!-- Edit Address Form -->
+          <form id="edit-form-address-<%= address.address_id %>" action="/admin/adminDashboard/editDeleteCustomer" method="POST" class="mt-4 space-y-2 hidden">
+            <input type="hidden" name="customer_id" value="<%= customer.customer_id %>">
+            <input type="hidden" name="address_id" value="<%= address.address_id %>">
+            <label class="block text-sm font-medium text-gray-700">Address</label>
+            <select name="address_type" required class="w-full border p-2 rounded mt-1">
+              <option value="Home" <%= address.address_type === 'Home' ? 'selected' : '' %>>Home</option>
+              <option value="Work" <%= address.address_type === 'Work' ? 'selected' : '' %>>Work</option>
+              <option value="Other" <%= address.address_type === 'Other' ? 'selected' : '' %>>Other</option>
+            </select>
+            <input type="text" name="street" value="<%= address.street %>" required class="w-full border p-2 rounded">
+            <input type="text" name="city" value="<%= address.city %>" required class="w-full border p-2 rounded">
+            <input type="text" name="state" value="<%= address.state %>" required class="w-full border p-2 rounded">
+            <input type="text" name="zip_code" value="<%= address.zip_code %>" required class="w-full border p-2 rounded">
+
+            <button type="submit" name="action" value="editAddress" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700">Save Changes</button>
+          </form>
+          <% }); %>
+
+
+        </div>
+        <% }) %>
+      </div>
+      <% } else { %>
+      <p class="text-gray-500 text-center">No Customers Found.</p>
+      <a href="/customerRegister" class="text-blue-600 hover:text-blue-800">+ Add Customer</a>
+      <% } %>
+    </div>
+
+    <!-- SERVICES TAB -->
+    <div id="services-tab" class="tab-content">
+      <div class="mb-6 flex justify-between items-center">
+        <h2 class="text-2xl font-semibold text-gray-600">Manage Services</h2>
+        <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg" onclick="toggleServiceForm()">+ Add New Service</button>
+      </div>
+      <!-- Add Service Form -->
+      <div id="add-service-form" class="bg-white p-6 rounded-lg shadow-lg mb-6 hidden">
+        <h3 class="text-xl font-semibold text-gray-700 mb-4">Add New Service</h3>
+        <form action="/admin/adminDashboard/addService" method="POST" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="service_name" class="block text-sm font-medium text-gray-700">Service Name</label>
+              <input type="text" name="service_name" id="service_name" required class="w-full border p-2 rounded mt-1">
+            </div>
+            <div>
+              <label for="service_price" class="block text-sm font-medium text-gray-700">Price (₹)</label>
+              <input type="number" name="service_price" id="service_price" required class="w-full border p-2 rounded mt-1">
+            </div>
+            <div>
+              <label for="service_category" class="block text-sm font-medium text-gray-700">Category</label>
+              <div class="flex space-x-2">
+                <select name="service_category" id="service_category" required class="w-full border p-2 rounded mt-1">
+                  <% categories.forEach(category => { %>
+                  <option value="<%= category %>"><%= category %></option>
+                  <% }) %>
+                </select>
+                <button type="button" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded" onclick="addNewCategory()">+ Add</button>
+              </div>
+            </div>
+            <div id="new-category-form" class="hidden mt-4">
+              <label for="new_category" class="block text-sm font-medium text-gray-700">New Category</label>
+              <input type="text" id="new_category" class="w-full border p-2 rounded mt-1" placeholder="Enter new category">
+              <button type="button" class="mt-2 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded" onclick="saveNewCategory()">Save Category</button>
+            </div>
+            <div class="flex justify-end space-x-3">
+              <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium py-2 px-4 rounded" onclick="toggleServiceForm()">Cancel</button>
+              <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded">Save Service</button>
+            </div>
+
+            <script>
+              function addNewCategory() {
+                document.getElementById('new-category-form').classList.remove('hidden');
+              }
+
+              function saveNewCategory() {
+                const newCategoryInput = document.getElementById('new_category');
+                const newCategory = newCategoryInput.value.trim();
+
+                if (newCategory) {
+                  const categorySelect = document.getElementById('service_category');
+                  const newOption = document.createElement('option');
+                  newOption.value = newCategory;
+                  newOption.textContent = newCategory;
+                  categorySelect.appendChild(newOption);
+                  categorySelect.value = newCategory;
+
+                  newCategoryInput.value = '';
+                  document.getElementById('new-category-form').classList.add('hidden');
+                } else {
+                  alert('Please enter a valid category name.');
+                }
+              }
+            </script>
+          </div>
         </form>
       </div>
 
-      <button onclick="toggleEditForm('customer-<%= customer.customer_id %>')" class="mt-2 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">Edit</button>
-
-      <!-- Edit Customer Form -->
-      <form id="edit-form-customer-<%= customer.customer_id %>" action="/admin/adminDashboard/editDeleteCustomer" method="POST" enctype="multipart/form-data" class="mt-4 space-y-2 hidden">
-        <input type="hidden" name="customer_id" value="<%= customer.customer_id %>">
-
-        <label class="block text-sm font-medium text-gray-700">Name</label>
-        <input type="text" name="customer_name" value="<%= customer.customer_name %>" required class="w-full border p-2 rounded">
-
-        <label class="block text-sm font-medium text-gray-700">Email</label>
-        <input type="email" name="customer_email" value="<%= customer.customer_email %>" required class="w-full border p-2 rounded">
-
-        <label class="block text-sm font-medium text-gray-700">Phone</label>
-        <input type="text" name="customer_ph_no" value="<%= customer.customer_ph_no %>" required class="w-full border p-2 rounded">
-
-        <label class="block text-sm font-medium text-gray-700">Profile Photo</label>
-        <input type="file" id="photo-<%= customer.customer_id %>" name="customer_photo" accept="image/*" class="w-full border p-2 rounded" onchange="previewImage(event, 'customer-<%= customer.customer_id %>')">
-        <div class="mt-3 flex items-center gap-4">
-          <img id="preview-customer-<%= customer.customer_id %>" class="w-16 h-16 rounded-full border border-gray-300 object-cover hidden" alt="Profile Preview">
-          <button type="button" id="remove-image-customer-<%= customer.customer_id %>" class="hidden text-sm text-red-500 hover:text-red-700 font-medium" onclick="removeImage('customer-<%= customer.customer_id %>')">Remove</button>
-        </div>
-
-        <label class="block text-sm font-medium text-gray-700">Balance Amount</label>
-        <input type="number" name="customer_balance_amt" value="<%= customer.customer_balance_amt %>" required class="w-full border p-2 rounded">
-
-        <button type="submit" name="action" value="edit" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700">Save Changes</button>
-      </form>
-
-      <% customer.addresses.forEach(address => { %>
-      <button onclick="toggleEditForm('address-<%= address.address_id %>')" class="mt-2 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">Edit Address</button>
-
-      <!-- Edit Address Form -->
-      <form id="edit-form-address-<%= address.address_id %>" action="/admin/adminDashboard/editDeleteCustomer" method="POST" class="mt-4 space-y-2 hidden">
-        <input type="hidden" name="customer_id" value="<%= customer.customer_id %>">
-        <input type="hidden" name="address_id" value="<%= address.address_id %>">
-        <label class="block text-sm font-medium text-gray-700">Address</label>
-        <select name="address_type" required class="w-full border p-2 rounded mt-1">
-          <option value="Home" <%= address.address_type === 'Home' ? 'selected' : '' %>>Home</option>
-          <option value="Work" <%= address.address_type === 'Work' ? 'selected' : '' %>>Work</option>
-          <option value="Other" <%= address.address_type === 'Other' ? 'selected' : '' %>>Other</option>
-        </select>
-        <input type="text" name="street" value="<%= address.street %>" required class="w-full border p-2 rounded">
-        <input type="text" name="city" value="<%= address.city %>" required class="w-full border p-2 rounded">
-        <input type="text" name="state" value="<%= address.state %>" required class="w-full border p-2 rounded">
-        <input type="text" name="zip_code" value="<%= address.zip_code %>" required class="w-full border p-2 rounded">
-
-        <button type="submit" name="action" value="editAddress" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700">Save Changes</button>
-      </form>
-      <% }); %>
-
-      <% customer.feedbacks.forEach(feedback => { %>
-      <button onclick="toggleEditForm('feedback-<%= feedback.feedback_id %>')" class="mt-2 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">Edit Feedback</button>
-
-      <!-- Edit Feedback Form -->
-      <form id="edit-form-feedback-<%= feedback.feedback_id %>" action="/admin/adminDashboard/editDeleteCustomer" method="POST" class="mt-4 space-y-2 hidden">
-        <input type="hidden" name="customer_id" value="<%= customer.customer_id %>">
-        <input type="hidden" name="feedback_id" value="<%= feedback.feedback_id %>">
-        <label class="block text-sm font-medium text-gray-700">Rating (1-5)</label>
-        <input type="number" name="rating" value="<%= feedback.rating %>" min="1" max="5" required class="w-full border p-2 rounded">
-        <label class="block text-sm font-medium text-gray-700">Feedback</label>
-        <textarea name="feedback_text" required class="w-full border p-2 rounded"><%= feedback.feedback_text %></textarea>
-
-        <button type="submit" name="action" value="editFeedback" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700">Save Changes</button>
-      </form>
-      <% }); %>
+      <!-- Service Table -->
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <table class="min-w-full">
+          <thead>
+            <tr class="bg-gray-50 border-b">
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">Service ID</th>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">Service Name</th>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <% 
+const groupedServices = servicesQuery.reduce((acc, service) => {
+if (!acc[service.category]) {
+acc[service.category] = [];
+}
+acc[service.category].push(service);
+return acc;
+}, {});
+%>
+            <% Object.keys(groupedServices).forEach(category => { %>
+            <tr>
+              <td colspan="5" class="py-3 px-4 bg-gray-100 font-semibold text-gray-700"><%= category %></td>
+            </tr>
+            <% groupedServices[category].forEach(service => { %>
+            <tr>
+              <td class="py-3 px-4"></td>
+              <td class="py-3 px-4"><%= service.service_id %></td>
+              <td class="py-3 px-4"><%= service.name %></td>
+              <td class="py-3 px-4">₹<%= service.price %></td>
+              <td class="py-3 px-4">
+                <div class="flex space-x-2">
+                  <button class="text-blue-600 hover:text-blue-800" onclick="editService('<%= service.service_id %>', '<%= service.name.replace(/'/g, "\\'") %>', '<%= service.category.replace(/'/g, "\\'") %>', '<%= service.price %>')">
+                    Edit
+                  </button>
+                  <button class="text-red-600 hover:text-red-800 ml-2" onclick="deleteService('<%= service.service_id %>')">Delete</button>
+                </div>
+              </td>
+            </tr>
+            <% }) %>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
     </div>
-    <% }) %>
-  </div>
-  <% } else { %>
-  <p class="text-gray-500 text-center">No Customers Found.</p>
-  <a href="/customerRegister" class="text-blue-600 hover:text-blue-800">+ Add Customer</a>
-  <% } %>
 
 
 
+    <!-- APPOINTMENTS TAB 
+<div id="appointments-tab" class="tab-content">
+<div class="mb-6 flex justify-between items-center">
+<h2 class="text-2xl font-semibold text-gray-600">Manage Appointments</h2>
+
+<!-- Appointment Controls --
 
 </div>
 
+<!-- Calendar View Toggle --
+<div class="mb-6 flex justify-end">
+<button class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-2 px-4 rounded-l-lg active-view" data-view="list">List View</button>
+<button class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-2 px-4 rounded-r-lg" data-view="calendar">Calendar View</button>
+</div>
+
+<!-- Appointments in List View --
+<div id="list-view" class="bg-white rounded-lg shadow overflow-hidden mb-8">
+<table class="min-w-full">
+<thead>
+<tr class="bg-gray-50 border-b">
+<th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+<th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">Customer</th>
+<th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">Service</th>
+<th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">Date & Time</th>
+<th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+<th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">Payment</th>
+<th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-200">
+<!-- Sample appointment data - replace with actual data from your backend --
+<tr>
+<td class="py-3 px-4">#1001</td>
+<td class="py-3 px-4">
+<div class="flex items-center">
+  <img src="/api/placeholder/40/40" alt="Customer" class="w-8 h-8 rounded-full mr-2">
+  <span>John Smith</span>
+</div>
+</td>
+<td class="py-3 px-4">Basic Car Wash</td>
+<td class="py-3 px-4">May 20, 2025 - 10:00 AM</td>
+<td class="py-3 px-4">
+<span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Paid ₹499</span>
+</td>
+<td class="py-3 px-4">
+<div class="flex space-x-2">
+  <button class="text-blue-600 hover:text-blue-800">Edit</button>
+  <button class="text-red-600 hover:text-red-800">Cancel</button>
+</div>
+</td>
+</tr>
+<tr>
+<td class="py-3 px-4">#1002</td>
+<td class="py-3 px-4">
+<div class="flex items-center">
+  <img src="/api/placeholder/40/40" alt="Customer" class="w-8 h-8 rounded-full mr-2">
+  <span>Emma Johnson</span>
+</div>
+</td>
+<td class="py-3 px-4">Premium Detailing</td>
+<td class="py-3 px-4">May 21, 2025 - 2:00 PM</td>
+<td class="py-3 px-4">
+<span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Upcoming</span>
+</td>
+<td class="py-3 px-4">
+<span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">Pending ₹3,999</span>
+</td>
+<td class="py-3 px-4">
+<div class="flex space-x-2">
+  <button class="text-blue-600 hover:text-blue-800">Edit</button>
+  <button class="text-red-600 hover:text-red-800">Cancel</button>
+</div>
+</td>
+</tr>
+<tr>
+<td class="py-3 px-4">#1003</td>
+<td class="py-3 px-4">
+<div class="flex items-center">
+  <img src="/api/placeholder/40/40" alt="Customer" class="w-8 h-8 rounded-full mr-2">
+  <span>Michael Brown</span>
+</div>
+</td>
+<td class="py-3 px-4">Oil Change</td>
+<td class="py-3 px-4">May 19, 2025 - 11:30 AM</td>
+<td class="py-3 px-4">
+<span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Completed</span>
+</td>
+<td class="py-3 px-4">
+<span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Paid ₹1,499</span>
+</td>
+<td class="py-3 px-4">
+<div class="flex space-x-2">
+  <button class="text-gray-600">View Details</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<!-- Calendar View (displayed when toggled) --
+<div id="calendar-view" class="bg-white rounded-lg shadow p-4 mb-8 hidden">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-lg font-semibold text-gray-700">May 2025</h3>
+<div class="flex space-x-2">
+<button class="p-2 rounded-lg hover:bg-gray-100">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+</svg>
+</button>
+<button class="p-2 rounded-lg hover:bg-gray-100">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- Calendar grid - This would be populated with actual data in a real implementation --
+<div class="grid grid-cols-7 gap-2">
+<div class="text-center p-2 text-gray-500 font-medium">Sun</div>
+<div class="text-center p-2 text-gray-500 font-medium">Mon</div>
+<div class="text-center p-2 text-gray-500 font-medium">Tue</div>
+<div class="text-center p-2 text-gray-500 font-medium">Wed</div>
+<div class="text-center p-2 text-gray-500 font-medium">Thu</div>
+<div class="text-center p-2 text-gray-500 font-medium">Fri</div>
+<div class="text-center p-2 text-gray-500 font-medium">Sat</div>
+
+<!-- Empty cells for previous month --
+<div class="text-center p-2 text-gray-300">28</div>
+<div class="text-center p-2 text-gray-300">29</div>
+<div class="text-center p-2 text-gray-300">30</div>
+
+<!-- May days --
+<div class="border rounded-lg p-2 min-h-20 hover:bg-gray-50">
+<div class="font-medium">1</div>
+</div>
+<div class="border rounded-lg p-2 min-h-20 hover:bg-gray-50">
+<div class="font-medium">2</div>
+</div>
+<div class="border rounded-lg p-2 min-h-20 hover:bg-gray-50">
+<div class="font-medium">3</div>
+</div>
+<div class="border rounded-lg p-2 min-h-20 hover:bg-gray-50">
+<div class="font-medium">4</div>
+</div>
+<!-- And so on for the rest of the month --
+
+<!-- Day with appointments - example --
+<div class="border rounded-lg p-2 min-h-20 hover:bg-gray-50">
+<div class="font-medium">19</div>
+<div class="mt-1 text-xs bg-green-100 text-green-800 rounded p-1">11:30 AM - Oil Change</div>
+</div>
+<div class="border rounded-lg p-2 min-h-20 hover:bg-gray-50 bg-blue-50">
+<div class="font-medium">20</div>
+<div class="mt-1 text-xs bg-yellow-100 text-yellow-800 rounded p-1">10:00 AM - Car Wash</div>
+</div>
+<div class="border rounded-lg p-2 min-h-20 hover:bg-gray-50">
+<div class="font-medium">21</div>
+<div class="mt-1 text-xs bg-yellow-100 text-yellow-800 rounded p-1">2:00 PM - Detailing</div>
+</div>
+<!-- Continue with remaining days --
+</div>
+</div>
+-->
+
+
+    <!-- FEEDBACK TAB -->
+    <div id="feedback-tab" class="tab-content">
+      <div class="mb-6 flex justify-between items-center">
+        <h2 class="text-2xl font-semibold text-gray-600">Customer Feedback</h2>
+
+        <!-- Feedback Controls -->
+        <div class="flex space-x-3">
+          <select id="feedback-filter" class="border rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="all">All Ratings</option>
+            <option value="5">5 Stars</option>
+            <option value="4">4 Stars</option>
+            <option value="3">3 Stars</option>
+            <option value="2">2 Stars</option>
+            <option value="1">1 Star</option>
+          </select>
+          <select id="feedback-sort" class="border rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="highest">Highest Rating</option>
+            <option value="lowest">Lowest Rating</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Feedback table -->
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <table class="min-w-full">
+          <thead>
+            <tr class="bg-gray-50 border-b">
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">Customer ID</th>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">Customer</th>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">Rating</th>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">Feedback</th>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <% feedbacksQuery.forEach(feedback => { %>
+            <tr>
+              <td class="py-3 px-4"><%= feedback.customer_id %></td>
+              <td class="py-3 px-4"><%= feedback.customer_name %></td>
+              <td class="py-3 px-4"><%= feedback.rating %> / 5</td>
+              <td class="py-3 px-4"><%= feedback.feedback_text %></td>
+              <td class="py-3 px-4"><%= feedback.feedback_date %></td>
+              <td class="py-3 px-4">
+                <form action="/adminDashboard/replyFeedback" method="POST" class="flex space-x-2">
+                  <input type="hidden" name="feedback_id" value="<%= feedback.feedback_id %>">
+                </form> <textarea name="reply" placeholder="Write your reply..." class="border rounded-lg p-2 w-full"></textarea>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded">Reply</button>
+                </form>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CART ITEMS TAB -->
+    <div id="carts-tab" class="tab-content">
+      <div class="mb-6">
+        <h2 class="text-2xl font-semibold text-gray-600">Cart Items</h2>
+        <p class="text-gray-500">View and manage customer shopping carts</p>
+      </div>
+
+      <!-- Cart Stats Summary -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div class="bg-white rounded-lg shadow p-4">
+          <div class="text-lg font-medium text-gray-800">Active Carts</div>
+          <div class="mt-2 text-3xl font-bold text-blue-600">24</div>
+          <div class="mt-1 text-sm text-gray-500">Items waiting for checkout</div>
+        </div>
+        <div class="bg-white rounded-lg shadow p-4">
+          <div class="text-lg font-medium text-gray-800">Abandoned Carts</div>
+          <div class="mt-2 text-3xl font-bold text-yellow-600">16</div>
+          <div class="mt-1 text-sm text-gray-500">Inactive for over 24 hours</div>
+        </div>
+        <div class="bg-white rounded-lg shadow p-4">
+          <div class="text-lg font-medium text-gray-800">Potential Revenue</div>
+          <div class="mt-2 text-3xl font-bold text-green-600">₹27,540</div>
+          <div class="mt-1 text-sm text-gray-500">From cart conversions</div>
+        </div>
+      </div>
+
+
+
+
+      <!-- Cart Items Table -->
+      <div class="mb-4 flex justify-between items-center">
+        <div class="flex space-x-4">
+          <div>
+            <label for="cart-filter-name" class="block text-sm font-medium text-gray-700">Filter by Customer Name:</label>
+            <input type="text" id="cart-filter-name" placeholder="Search by customer name..." class="border rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label for="cart-filter-id" class="block text-sm font-medium text-gray-700">Filter by Customer ID:</label>
+            <input type="text" id="cart-filter-id" placeholder="Search by customer ID..." class="border rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+        </div>
+        <script>
+          document.getElementById('cart-filter-name').addEventListener('input', function() {
+            const filterValue = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.cart-item-row');
+            rows.forEach(row => {
+              const customerName = row.children[1].textContent.toLowerCase();
+              if (customerName.includes(filterValue)) {
+                row.style.display = '';
+              } else {
+                row.style.display = 'none';
+              }
+            });
+          });
+
+          document.getElementById('cart-filter-id').addEventListener('input', function() {
+            const filterValue = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.cart-item-row');
+            rows.forEach(row => {
+              const customerId = row.children[0].textContent.toLowerCase();
+              if (customerId.includes(filterValue)) {
+                row.style.display = '';
+              } else {
+                row.style.display = 'none';
+              }
+            });
+          });
+        </script>
+      </div>
+
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <table class="min-w-full">
+          <thead>
+            <tr class="bg-gray-50 border-b">
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">Customer ID</th>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">Customer Name</th>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">Services</th>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">Total Price</th>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">Added At</th>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
+            </tr>
+          </thead>
+          <tbody id="cart-items-body" class="divide-y divide-gray-200">
+            <% 
+            const groupedCartItems = cartItems.reduce((acc, item) => {
+                const key = `${item.customer_id}-${item.added_at}`;
+                if (!acc[key]) {
+                    acc[key] = { customer_id: item.customer_id, customer_name: item.customer_name, added_at: item.added_at, services: [], total_price: 0 };
+                }
+                acc[key].services.push(item.service_name);
+                acc[key].total_price += parseFloat(item.service_price || 0);
+                return acc;
+            }, {});
+            %>
+            <% Object.values(groupedCartItems).forEach(group => { %>
+            <tr class="cart-item-row">
+              <td class="py-3 px-4"><%= group.customer_id %></td>
+              <td class="py-3 px-4"><%= group.customer_name %></td>
+              <td class="py-3 px-4"><%= group.services.join(', ') %></td>
+              <td class="py-3 px-4">₹<%= group.total_price %></td>
+              <td class="py-3 px-4"><%= group.added_at %></td>
+              <td class="py-3 px-4">
+                <div class="flex space-x-2">
+                  <button class="text-blue-600 hover:text-blue-800" onclick="deleteCartItem('<%= group.customer_id %>')">Delete</button>
+                </div>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+      <script>
+        document.getElementById('cart-filter').addEventListener('input', function() {
+          const filterValue = this.value.toLowerCase();
+          const rows = document.querySelectorAll('.cart-item-row');
+          rows.forEach(row => {
+            const customerName = row.children[1].textContent.toLowerCase();
+            if (customerName.includes(filterValue)) {
+              row.style.display = '';
+            } else {
+              row.style.display = 'none';
+            }
+          });
+        });
+      </script>
+    </div>
+  </div>
+</div>
 
 <script>
+  // Tab switching functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // Remove active class from all tabs
+        tabButtons.forEach(btn => btn.classList.remove('active', 'border-blue-500', 'text-blue-600'));
+        tabContents.forEach(content => content.classList.remove('active'));
+
+        // Add active class to clicked tab
+        button.classList.add('active', 'border-blue-500', 'text-blue-600');
+        const tabId = button.getAttribute('data-tab');
+        document.getElementById(`${tabId}-tab`).classList.add('active');
+      });
+    });
+
+    // Toggle view (list/calendar) for appointments
+    const viewButtons = document.querySelectorAll('[data-view]');
+    viewButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        viewButtons.forEach(btn => btn.classList.remove('bg-blue-500', 'text-white'));
+        button.classList.add('bg-blue-500', 'text-white');
+
+        const view = button.getAttribute('data-view');
+        if (view === 'list') {
+          document.getElementById('list-view').classList.remove('hidden');
+          document.getElementById('calendar-view').classList.add('hidden');
+        } else {
+          document.getElementById('list-view').classList.add('hidden');
+          document.getElementById('calendar-view').classList.remove('hidden');
+        }
+      });
+    });
+  });
+
   // Generic function to toggle edit forms
-function toggleEditForm(formId) {
-  document.querySelectorAll("form[id^='edit-form']").forEach(form => form.classList.add('hidden'));
-  document.getElementById(`edit-form-${formId}`).classList.toggle('hidden');
-}
+  function toggleEditForm(formId) {
+    document.querySelectorAll("form[id^='edit-form']").forEach(form => form.classList.add('hidden'));
+    document.getElementById(`edit-form-${formId}`).classList.toggle('hidden');
+  }
 
-// Generic function to preview image for any form
-function previewImage(event, formId) {
-  const preview = document.getElementById(`preview-${formId}`);
-  const removeBtn = document.getElementById(`remove-image-${formId}`);
-  
-  preview.src = URL.createObjectURL(event.target.files[0]);
-  preview.classList.remove('hidden');
-  removeBtn.classList.remove('hidden');
-}
+  // Generic function to preview image for any form
+  function previewImage(event, formId) {
+    const preview = document.getElementById(`preview-${formId}`);
+    const removeBtn = document.getElementById(`remove-image-${formId}`);
 
-// Generic function to remove image preview
-function removeImage(formId) {
-  const preview = document.getElementById(`preview-${formId}`);
-  const removeBtn = document.getElementById(`remove-image-${formId}`);
-  const fileInput = document.getElementById(`photo-${formId}`);
-  
-  preview.src = '';
-  preview.classList.add('hidden');
-  removeBtn.classList.add('hidden');
-  fileInput.value = '';
-}
+    preview.src = URL.createObjectURL(event.target.files[0]);
+    preview.classList.remove('hidden');
+    removeBtn.classList.remove('hidden');
+  }
 
+  // Generic function to remove image preview
+  function removeImage(formId) {
+    const preview = document.getElementById(`preview-${formId}`);
+    const removeBtn = document.getElementById(`remove-image-${formId}`);
+    const fileInput = document.getElementById(`photo-${formId}`);
+
+    preview.src = '';
+    preview.classList.add('hidden');
+    removeBtn.classList.add('hidden');
+    fileInput.value = '';
+  }
+
+  // Toggle service form visibility
+  function toggleServiceForm() {
+    document.getElementById('add-service-form').classList.toggle('hidden');
+  }
+
+  // Edit service function
+  function editService(serviceId) {
+    alert('Edit service with ID: ' + serviceId);
+    // Implement edit logic or form display
+  }
+
+  // Delete service function
+  function deleteService(serviceId) {
+    if (confirm('Are you sure you want to delete this service?')) {
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = '/adminDashboard/deleteService';
+
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'service_id';
+      input.value = serviceId;
+
+      form.appendChild(input);
+      document.body.appendChild(form);
+      form.submit();
+    }
+  }
+
+
+  // FRONTEND CODE
+  // Improved function to handle editing a service with pre-filled data
+  function editService(serviceId, serviceName, serviceCategory, servicePrice) {
+    // Create a modal dialog instead of using prompt
+    const modal = document.createElement('div');
+    modal.className = 'service-edit-modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Edit Service</h2>
+            <form id="editServiceForm">
+                <div class="form-group">
+                    <label for="serviceName">Service Name:</label>
+                    <input type="text" id="serviceName" value="${serviceName}" required>
+                </div>
+                <div class="form-group">
+                    <label for="serviceCategory">Service Category:</label>
+                    <input type="text" id="serviceCategory" value="${serviceCategory}" required>
+                </div>
+                <div class="form-group">
+                    <label for="servicePrice">Service Price:</label>
+                    <input type="number" id="servicePrice" value="${servicePrice}" step="0.01" min="0" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="save-btn">Save Changes</button>
+                    <button type="button" class="cancel-btn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Add event listeners for modal interactions
+    const closeBtn = modal.querySelector('.close-btn');
+    const cancelBtn = modal.querySelector('.cancel-btn');
+    const form = modal.querySelector('#editServiceForm');
+
+    // Close modal function
+    const closeModal = () => {
+      document.body.removeChild(modal);
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    cancelBtn.addEventListener('click', closeModal);
+
+    // Handle form submission
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const updatedName = form.querySelector('#serviceName').value;
+      const updatedCategory = form.querySelector('#serviceCategory').value;
+      const updatedPrice = form.querySelector('#servicePrice').value;
+
+      // Show loading state
+      const saveBtn = form.querySelector('.save-btn');
+      const originalBtnText = saveBtn.textContent;
+      saveBtn.textContent = 'Saving...';
+      saveBtn.disabled = true;
+
+      // Input validation
+      if (!updatedName.trim() || !updatedCategory.trim() || !updatedPrice.trim()) {
+        showNotification('All fields are required', 'error');
+        saveBtn.textContent = originalBtnText;
+        saveBtn.disabled = false;
+        return;
+      }
+
+      // Send AJAX request to update service
+      fetch('/admin/adminDashboard/editService', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': getCSRFToken() // Assuming you have a function to get CSRF token
+          },
+          body: JSON.stringify({
+            service_id: serviceId,
+            name: updatedName.trim(),
+            category: updatedCategory.trim(),
+            price: parseFloat(updatedPrice.trim())
+          })
+        })
+        .then(response => {
+          if (!response.ok) {
+            return response.json().then(data => {
+              throw new Error(data.message || 'Failed to update service');
+            });
+          }
+          return response.json();
+        })
+        .then(data => {
+          showNotification(data.message || 'Service updated successfully!', 'success');
+          // Refresh only the service list container instead of the entire page
+          refreshServiceList();
+          closeModal();
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showNotification(error.message || 'An error occurred while updating the service', 'error');
+          saveBtn.textContent = originalBtnText;
+          saveBtn.disabled = false;
+        });
+    });
+  }
+
+
+
+  // Helper function to show notifications
+  function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+
+    const container = document.querySelector('.notification-container') || document.body;
+    container.appendChild(notification);
+
+    // Auto-remove after 3 seconds
+    setTimeout(() => {
+      notification.classList.add('fade-out');
+      setTimeout(() => {
+        container.removeChild(notification);
+      }, 500);
+    }, 3000);
+  }
+
+  // Helper function to refresh the service list without full page reload
+  function refreshServiceList() {
+    const serviceListContainer = document.querySelector('.service-list-container');
+    if (!serviceListContainer) return;
+
+    fetch('/admin/adminDashboard/getServices')
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          renderServiceList(data.services, serviceListContainer);
+        }
+      })
+      .catch(error => {
+        console.error('Error refreshing service list:', error);
+      });
+  }
+
+  // Helper function to render the service list
+  function renderServiceList(services, container) {
+    container.innerHTML = '';
+
+    if (services.length === 0) {
+      container.innerHTML = '<p class="no-services">No services found.</p>';
+      return;
+    }
+
+    const table = document.createElement('table');
+    table.className = 'service-table';
+    table.innerHTML = `
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    `;
+
+    const tbody = table.querySelector('tbody');
+
+    services.forEach(service => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+            <td>${service.service_id}</td>
+            <td>${service.name}</td>
+            <td>${service.category}</td>
+            <td>$${service.price.toFixed(2)}</td>
+            <td>
+                <button class="edit-btn" onclick="editService(${service.service_id}, '${service.name.replace(/'/g, "\\'")}', '${service.category.replace(/'/g, "\\'")}', ${service.price})">Edit</button>
+                <button class="delete-btn" onclick="deleteService(${service.service_id})">Delete</button>
+            </td>
+        `;
+      tbody.appendChild(row);
+    });
+
+    container.appendChild(table);
+  }
+
+  // Helper function to get CSRF token
+  function getCSRFToken() {
+    return document.querySelector('meta[name="csrf-token"]')?.content || '';
+  }
+
+  // Add CSS for the modal and notifications
+  const style = document.createElement('style');
+  style.textContent = `
+    .service-edit-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+    
+    .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        width: 80%;
+        max-width: 500px;
+        position: relative;
+    }
+    
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+        font-size: 24px;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    
+    .form-group input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+    }
+    
+    .form-actions button {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    .save-btn {
+        background-color: #4CAF50;
+        color: white;
+    }
+    
+    .cancel-btn {
+        background-color: #f44336;
+        color: white;
+    }
+    
+    .notification-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1001;
+    }
+    
+    .notification {
+        padding: 10px 20px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    
+    .notification.success {
+        background-color: #4CAF50;
+    }
+    
+    .notification.error {
+        background-color: #f44336;
+    }
+    
+    .notification.info {
+        background-color: #2196F3;
+    }
+    
+    .fade-out {
+        opacity: 0;
+        transition: opacity 0.5s;
+    }
+`;
+  document.head.appendChild(style);
+
+
+
+  // Initialize charts
+  document.addEventListener('DOMContentLoaded', function() {
+    // Bookings chart
+    const bookingsCtx = document.getElementById('bookingsChart');
+    new Chart(bookingsCtx, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+        datasets: [{
+          label: 'Service Bookings',
+          data: [65, 78, 90, 81, 105],
+          borderColor: 'rgb(59, 130, 246)',
+          backgroundColor: 'rgba(59, 130, 246, 0.1)',
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    // Ratings chart
+    const ratingsCtx = document.getElementById('ratingsChart');
+    new Chart(ratingsCtx, {
+      type: 'bar',
+      data: {
+        labels: ['5 Stars', '4 Stars', '3 Stars', '2 Stars', '1 Star'],
+        datasets: [{
+          label: 'Feedback Count',
+          data: [42, 28, 10, 5, 2],
+          backgroundColor: [
+            'rgba(52, 211, 153, 0.8)',
+            'rgba(59, 130, 246, 0.8)',
+            'rgba(251, 191, 36, 0.8)',
+            'rgba(239, 68, 68, 0.7)',
+            'rgba(239, 68, 68, 0.9)',
+          ]
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  });
+
+
+  // FRONTEND CODE
+  // Function to handle the delete service confirmation and operation
+  function deleteService(serviceId, serviceName) {
+    // Create a confirmation modal
+    const modal = document.createElement('div');
+    modal.className = 'service-delete-modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Delete Service</h2>
+            <p>Are you sure you want to delete the service "${serviceName}"?</p>
+            <p class="warning">This action cannot be undone.</p>
+            <div class="form-actions">
+                <button type="button" class="delete-btn">Delete</button>
+                <button type="button" class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Add event listeners for modal interactions
+    const closeBtn = modal.querySelector('.close-btn');
+    const cancelBtn = modal.querySelector('.cancel-btn');
+    const deleteBtn = modal.querySelector('.delete-btn');
+
+    // Close modal function
+    const closeModal = () => {
+      document.body.removeChild(modal);
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    cancelBtn.addEventListener('click', closeModal);
+
+    // Handle delete confirmation
+    deleteBtn.addEventListener('click', () => {
+      // Show loading state
+      deleteBtn.textContent = 'Deleting...';
+      deleteBtn.disabled = true;
+
+      // Send AJAX request to delete service
+      fetch('/admin/adminDashboard/deleteService', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': getCSRFToken() // Assuming you have a function to get CSRF token
+          },
+          body: JSON.stringify({
+            service_id: serviceId
+          })
+        })
+        .then(response => {
+          if (!response.ok) {
+            return response.json().then(data => {
+              throw new Error(data.message || 'Failed to delete service');
+            });
+          }
+          return response.json();
+        })
+        .then(data => {
+          showNotification(data.message || 'Service deleted successfully!', 'success');
+          // Refresh only the service list container instead of the entire page
+          refreshServiceList();
+          closeModal();
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showNotification(error.message || 'An error occurred while deleting the service', 'error');
+          deleteBtn.textContent = 'Delete';
+          deleteBtn.disabled = false;
+        });
+    });
+  }
+
+  // Function to refresh the service list after operations
+  function refreshServiceList() {
+    const serviceListContainer = document.getElementById('serviceListContainer');
+    if (!serviceListContainer) return;
+
+    // Add loading indicator
+    serviceListContainer.innerHTML = '<div class="loading">Loading services...</div>';
+
+    // Fetch updated service list
+    fetch('/admin/adminDashboard/getServices')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch services');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.success && data.services) {
+          // Group services by category
+          const servicesByCategory = {};
+          data.services.forEach(service => {
+            if (!servicesByCategory[service.category]) {
+              servicesByCategory[service.category] = [];
+            }
+            servicesByCategory[service.category].push(service);
+          });
+
+          // Build the HTML
+          let html = '';
+          Object.keys(servicesByCategory).sort().forEach(category => {
+            html += `
+                        <div class="service-category">
+                            <h3>${category}</h3>
+                            <div class="service-list">
+                                <table class="service-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Service Name</th>
+                                            <th>Price</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                    `;
+
+            servicesByCategory[category].forEach(service => {
+              html += `
+                            <tr>
+                                <td>${service.name}</td>
+                                <td>$${parseFloat(service.price).toFixed(2)}</td>
+                                <td class="service-actions">
+                                    <button class="text-blue-600 hover:text-blue-800"
+                                        onclick="editService('${service.service_id}', '${service.name.replace(/'/g, "\\'")}', '${service.category.replace(/'/g, "\\'")}', '${service.price}')">
+                                        Edit
+                                    </button>
+                                    <button class="text-red-600 hover:text-red-800 ml-2"
+                                        onclick="deleteService('${service.service_id}', '${service.name.replace(/'/g, "\\'")}')">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+            });
+
+            html += `
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `;
+          });
+
+          serviceListContainer.innerHTML = html || '<p>No services found.</p>';
+        } else {
+          serviceListContainer.innerHTML = '<p>No services available.</p>';
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching services:', error);
+        serviceListContainer.innerHTML = '<p class="error">Error loading services. Please try again.</p>';
+      });
+  }
+
+  // Helper function to show notifications
+  function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+
+    const container = document.querySelector('.notification-container') || document.body;
+    container.appendChild(notification);
+
+    // Auto-remove after 3 seconds
+    setTimeout(() => {
+      notification.classList.add('fade-out');
+      setTimeout(() => {
+        if (container.contains(notification)) {
+          container.removeChild(notification);
+        }
+      }, 300);
+    }, 3000);
+  }
+
+  // Helper function to get CSRF token from meta tag
+  function getCSRFToken() {
+    return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+  }
 </script>
+
+<style>
+  .service-delete-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .service-delete-modal .modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
+  }
+
+  .service-delete-modal .close-btn {
+    float: right;
+    cursor: pointer;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .service-delete-modal .warning {
+    color: #dc3545;
+    margin-bottom: 1rem;
+    font-weight: bold;
+  }
+
+  .service-delete-modal .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 1.5rem;
+  }
+
+  .service-delete-modal .delete-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .service-delete-modal .delete-btn:hover {
+    background-color: #c82333;
+  }
+
+  .service-delete-modal .cancel-btn {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .service-delete-modal .cancel-btn:hover {
+    background-color: #5a6268;
+  }
+
+  .service-delete-modal .delete-btn:disabled {
+    background-color: #dc3545;
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+
+  .notification {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    padding: 1rem;
+    border-radius: 4px;
+    color: white;
+    max-width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1100;
+    transition: opacity 0.3s ease;
+  }
+
+  .notification.success {
+    background-color: #28a745;
+  }
+
+  .notification.error {
+    background-color: #dc3545;
+  }
+
+  .notification.info {
+    background-color: #17a2b8;
+  }
+
+  .notification.fade-out {
+    opacity: 0;
+  }
+</style>
 
 <%- include('includes/footer') %>

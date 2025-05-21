@@ -40,6 +40,10 @@ exports.getCustomerDashboard = [isCustomer, async (req, res) => {
         const [customerResult] = await pool.query('SELECT c.customer_id, c.customer_created_at, c.customer_name, c.customer_email, c.customer_ph_no, c.customer_photo, c.customer_balance_amt FROM customers c WHERE c.customer_id = ?', [customerId]);
         const [addressResult] = await pool.query('SELECT * FROM customer_addresses ca WHERE ca.customer_id = ?', [customerId]);
         const [feedbackResult] = await pool.query('SELECT * FROM feedbacks f WHERE f.customer_id = ?', [customerId]);
+        const [servicesResult] = await pool.query('SELECT * FROM service s');
+        const [categoriesResult] = await pool.query('SELECT DISTINCT category FROM service');
+        const [cartResult] = await pool.query('SELECT * FROM cart_items c WHERE c.customer_id = ?', [customerId]);
+
 
         if (!customerResult.length) {
             return res.status(404).render("404", {
@@ -61,6 +65,10 @@ exports.getCustomerDashboard = [isCustomer, async (req, res) => {
 
         const addresses = Array.isArray(addressResult) ? addressResult : [];
         const feedbacks = Array.isArray(feedbackResult) ? feedbackResult : [];
+        const services = Array.isArray(servicesResult) ? servicesResult : [];
+        const categories = Array.isArray(categoriesResult) ? categoriesResult.map(row => row.category) : [];
+        const cartItems = Array.isArray(cartResult) ? cartResult : [];
+
 
         res.render('customerDashboard', {
             pagetitle: `Customer Panel - ${req.session.user.username}`,
@@ -70,6 +78,9 @@ exports.getCustomerDashboard = [isCustomer, async (req, res) => {
             customer,
             addresses,
             feedbacks,
+            purchaseHistory:cartItems,
+            services,
+            categories
         });
 
     } catch (err) {
@@ -630,6 +641,8 @@ exports.downloadCustomerCard = [isCustomer, (req, res) => {
 }];
 
 
+
+
 exports.downloadInvoice = [isCustomer, async (req, res) => {
     try {
         const { invoiceNo } = req.params;
@@ -941,3 +954,4 @@ exports.paymentSuccess = [isCustomer, async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal server error.' });
     }
 }];
+module.exports = exports;
