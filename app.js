@@ -26,9 +26,7 @@ app.get('/carzise_contact', (req, res) => {
     res.render('carzise_contact');
 });
 
-app.get('/carzise_service', (req, res) => {
-    res.render('carzise_service');
-});
+
 
 
 app.get('/carserv_index', (req, res) => {
@@ -120,7 +118,7 @@ app.use((err, req, res, next) => {
 // Start Server
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
-    console.log(`🚀 Server is running on port http://localhost:${PORT}`);
+    console.log(`🚀 Server running on port ${PORT}`);
 });
 
 // Test MySQL Connection
